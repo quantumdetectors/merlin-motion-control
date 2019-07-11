@@ -17,33 +17,48 @@ def path_user_settings():
     verified_input = user_input
     return verified_input
 
+def default_ip():
+    user_input = os.environ.get('IP_ADDRESS', None)
+    verified_input = user_input
+    return verified_input
+def default_requested_position():
+    user_input = os.environ.get('DEFAULT_REQUESTED_POSITION', None)
+    verified_input = user_input
+    return verified_input
+def default_speed():
+    user_input = os.environ.get('SPEED', None)
+    verified_input = user_input
+    return verified_input
+def default_speed_out():
+    user_input = os.environ.get('SPEED_OUT', None)
+    verified_input = user_input
+    return verified_input
+
   #  "ip_address": "192.168.0.155",
   #  "default_requested_position": 50000,
   #  "speed": 20000,
   #  "speed_out": 20000
-def load_settings():
+def load_user_settings():
     settings = dict()
     path = path_user_settings()
     if os.path.isfile(path):
         with open(path) as json_file:
             user_settings = json.load(json_file)
             for k,v in user_settings.items():
-                print(type(k),v)
                 if k == "ip_address":
                     is_ip = is_valid_ipv4_address(v)
                     print(is_ip)
                     if is_ip == True:
-                        settings.update(k,v)
+                        settings.update({k:v})
                     else:
                         raise AttributeError("Invalid IP address. ", v, " is not a valid IPv4 address.")
+                elif isinstance(v,int):
+                    settings.update({k:v})
+                else:
+                    raise AttributeError("Invalid type. ", k," requires an integer value but has been set to ", v, ".")
     else:
         raise FileNotFoundError("No settings file found. Using default settings. Missing file ", path)
     return settings
-
-
-
-
-
 
 
 def db_password():
