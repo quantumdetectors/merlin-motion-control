@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/Users/richard/anaconda3/bin/python3
 from merlin_motion_control.controller import app
 import config
 
