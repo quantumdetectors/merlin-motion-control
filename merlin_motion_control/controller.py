@@ -1,8 +1,11 @@
 import config
+from views.interface import MerlinMotionControlApp
+
+
 
 class app():
-    def run():
 
+    def run():
         try:
             settings = config.load_user_settings()
             for k,v in settings.items():
@@ -20,3 +23,4 @@ class app():
             print("Default settings are:")
             for k,v in settings.items():
                 print(k,v)
+        MerlinMotionControlApp().run()
