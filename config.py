@@ -48,9 +48,7 @@ def load_user_settings():
             user_settings = json.load(json_file)
             for k,v in user_settings.items():
                 if k == "ip_address":
-                    is_ip = is_valid_ipv4_address(v)
-                    print(is_ip)
-                    if is_ip == True:
+                    if is_valid_ipv4_address(v):
                         settings.update({k:v})
                     else:
                         raise AttributeError("Invalid IP address. ", v, " is not a valid IPv4 address.")
