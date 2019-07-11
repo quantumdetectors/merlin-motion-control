@@ -1,0 +1,30 @@
+<CustomButton@Button>:
+    font_size: 32
+    color: 0,0,0,1
+    size: 150, 50
+    background_normal: ''
+    background_color: .88, .88, .88, 1
+    size_hint: .4, .3
+
+<FloatLayout>:
+    CustomButton:
+        text: "Top left"
+        pos_hint: {"x": 0, "top": 1}
+    CustomButton:
+        text: "Bottom right"
+        pos_hint: {"right": 1, "y": 0}
+    CustomButton:
+        text: "Bottom left"
+        pos_hint: {"x": 0, "bottom": 1}
+    CustomButton:
+        text: "Top right"
+        pos_hint: {"right": 1, "top": 1}
+    CustomButton:
+        text: "Middle"
+        pos_hint: {"center_x": .5, "center_y": .5}
+
+
+<ContainerBox>:
+	orientation: 'horizontal'
+	HBoxWidget:
+	VBoxWidget:

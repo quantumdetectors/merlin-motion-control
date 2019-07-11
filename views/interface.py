@@ -14,7 +14,6 @@ class MerlinMotionControlApp(App):
     version=config.software_version()
 
     def build(self):
-        print("here")
         return ContainerGrid()
 
 if __name__ == '__main__':

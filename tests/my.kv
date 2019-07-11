@@ -11,12 +11,12 @@
     cursor_color: 1, 1, 1, 1
     hint_text: 'Heading'
     multiline: False
-    padding: [80,25]
+    padding_x: [30,30]
 
 <CustomLabel@Label>:
     font_size: root.height*0.3
 
-<ActionButtons>:
+<HBoxWidget>:
     id: buttons
     rows: 3
     cols: 1
@@ -38,7 +38,7 @@
         width: 200
         on_press: root.parent.stop()
 
-<Labels>:
+<VBoxWidget>:
     rows: 7
     cols: 1
     spacing: 10
@@ -59,7 +59,7 @@
     CustomLabel:
         text: "Position"
 
-<StatusFields>:
+<TBoxWidget>:
     rows: 7
     cols: 1
     spacing: 10
@@ -80,17 +80,18 @@
         on_focus:
             self.border_color=(.5,.5,.5,1)
             self.cursor=(0,0)
+            self.text=''
         hint_text: root.parent.requested_position
         on_text_validate:
             root.parent.requested_position=self.text
     CustomLabel:
         text: root.parent.rp
 
-<ContainerGrid>:
+<ContainerBox>:
     id: container
 	orientation: 'horizontal'
     cols: 3
     rows: 1
-	ActionButtons:
-	Labels:
-    StatusFields:
+	HBoxWidget:
+	VBoxWidget:
+    TBoxWidget:

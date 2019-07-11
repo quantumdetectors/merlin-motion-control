@@ -2,7 +2,6 @@ import config
 from views.interface import MerlinMotionControlApp
 
 
-
 class app():
 
     def run():

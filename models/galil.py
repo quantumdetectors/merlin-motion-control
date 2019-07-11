@@ -6,6 +6,8 @@ import random
 class MotionLink():
     ip_address = ''
     debug = False
+    last_debug_pos = 0
+    state = 0
     def _execute(self,command):
         if not self.debug:
             try:
@@ -23,7 +25,27 @@ class MotionLink():
             finally:
                 g.GClose()
         else:
-            return str(random.randint(1,50000))
+            # Move in
+            if command == 'merin=1':
+                self.state = 1
+            elif command == 'DCX=100000;STX;merstat=3':
+                self.state = 2
+            elif command == 'merin=0':
+                self.state = 0
+            elif command == 'RP':
+                if self.state == 1:
+                    debug_pos = self.last_debug_pos+200
+                    self.last_debug_pos = debug_pos
+                    return str(debug_pos)
+                elif self.state == 2:
+                    return str(self.last_debug_pos)
+                elif self.state == 0:
+                    if self.last_debug_pos==0:
+                        return '0'
+                    else:
+                        debug_pos = self.last_debug_pos-200
+                        self.last_debug_pos = debug_pos
+                        return str(debug_pos)
 
     def move(self, cmd):
         val = self._execute('merin={}'.format(cmd))
