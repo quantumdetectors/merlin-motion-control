@@ -1,0 +1,97 @@
+<CustomButton@Button>:
+    font_size: root.height*0.15
+    color: 0,0,0,1
+    background_normal: ''
+    background_color: .88, .88, .88, 1
+
+<CustomTextInput@TextInput>:
+    font_size: root.height*0.3
+    background_color: .2, .2, .2, 1
+    foreground_color: 1, 1, 1, 1
+    cursor_color: 1, 1, 1, 1
+    hint_text: 'Heading'
+    multiline: False
+    padding_x: [30,30]
+
+<CustomLabel@Label>:
+    font_size: root.height*0.3
+
+<ActionButtons>:
+    id: buttons
+    rows: 3
+    cols: 1
+    spacing: 10
+    padding: 0
+    CustomButton:
+        text: "Move in"
+        size_hint_x: None
+        width: 200
+        #on_press: root.parent.move_in()
+    CustomButton:
+        text: "Move out"
+        size_hint_x: None
+        width: 200
+        #on_press: root.parent.move_out()
+    CustomButton:
+        text: "Stop"
+        size_hint_x: None
+        width: 200
+        #on_press: root.parent.stop()
+
+<Labels>:
+    rows: 7
+    cols: 1
+    spacing: 10
+    padding: 0
+
+    CustomLabel:
+        text: "Movement Blocked"
+    CustomLabel:
+        text: "Requested State"
+    CustomLabel:
+        text: "Current State"
+    CustomLabel:
+        text: "Gatan In"
+    CustomLabel:
+        text: "Gatan Veto"
+    CustomLabel:
+        text: "Requested Position"
+    CustomLabel:
+        text: "Position"
+
+<StatusFields>:
+    rows: 7
+    cols: 1
+    spacing: 10
+    padding: 0
+    CustomLabel:
+        text: "0"
+    CustomLabel:
+        text: "0"
+    CustomLabel:
+        text: "0"
+    CustomLabel:
+        text: "0"
+    CustomLabel:
+        text: "0"
+    CustomTextInput:
+        id: req_pos
+        focus: False
+        on_focus:
+            self.border_color=(.5,.5,.5,1)
+            self.cursor=(0,0)
+            self.text=''
+        hint_text: "0"
+        on_text_validate:
+            "0"
+    CustomLabel:
+        text: "0"
+
+<ContainerGrid>:
+    id: container
+	orientation: 'horizontal'
+    cols: 3
+    rows: 1
+	ActionButtons:
+	Labels:
+    StatusFields:
