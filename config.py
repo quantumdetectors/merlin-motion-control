@@ -2,7 +2,7 @@
 """Config file for validating .env variables and putting them into objects."""
 import os
 import json
-from models import verify_ip
+from models.verify_ip import is_valid_ipv4_address
 
 
 
@@ -22,17 +22,24 @@ def path_user_settings():
   #  "speed": 20000,
   #  "speed_out": 20000
 def load_settings():
-    if os.path.isfile(path_user_settings()):
-        with open(path_user_settings()) as json_file:
+    settings = dict()
+    path = path_user_settings()
+    if os.path.isfile(path):
+        with open(path) as json_file:
             user_settings = json.load(json_file)
             for k,v in user_settings.items():
-                print(k,v)
-                if k is "ip_address":
-                    is_ip = verify_ip(v)
+                print(type(k),v)
+                if k == "ip_address":
+                    is_ip = is_valid_ipv4_address(v)
+                    print(is_ip)
                     if is_ip == True:
-                        continue
+                        settings.update(k,v)
                     else:
-                        raise "Invalid IP address"
+                        raise AttributeError("Invalid IP address. ", v, " is not a valid IPv4 address.")
+    else:
+        raise FileNotFoundError("No settings file found. Using default settings. Missing file ", path)
+    return settings
+
 
 
 
