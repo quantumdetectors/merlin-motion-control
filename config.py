@@ -5,12 +5,15 @@ import json
 from models.verify_ip import is_valid_ipv4_address
 
 
+def software_version():
+    user_input = os.environ.get('SOFTWARE_VERSION', None)
+    verified_input = user_input
+    return verified_input
 
 def max_position():
     user_input = os.environ.get('MAXIMUM_POSITION', None)
     verified_input = user_input
     return verified_input
-
 
 def path_user_settings():
     user_input = os.environ.get('USER_CONFIG', None)
@@ -21,23 +24,22 @@ def default_ip():
     user_input = os.environ.get('IP_ADDRESS', None)
     verified_input = user_input
     return verified_input
+
 def default_requested_position():
     user_input = os.environ.get('DEFAULT_REQUESTED_POSITION', None)
     verified_input = user_input
     return verified_input
+
 def default_speed():
     user_input = os.environ.get('SPEED', None)
     verified_input = user_input
     return verified_input
+
 def default_speed_out():
     user_input = os.environ.get('SPEED_OUT', None)
     verified_input = user_input
     return verified_input
 
-  #  "ip_address": "192.168.0.155",
-  #  "default_requested_position": 50000,
-  #  "speed": 20000,
-  #  "speed_out": 20000
 def load_user_settings():
     settings = dict()
     path = path_user_settings()
