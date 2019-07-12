@@ -1,5 +1,5 @@
 from kivy.uix.gridlayout import GridLayout
-from kivy.properties import StringProperty, BooleanProperty
+from kivy.properties import StringProperty, BooleanProperty, ListProperty
 from views.actionbuttons import ActionButtons
 from views.statusfields import StatusFields
 from views.labels import Labels
@@ -12,8 +12,7 @@ class ContainerGrid(GridLayout):
     last_cycle_rp = StringProperty('Default')
     block_movement = BooleanProperty(False)
     movement_blocked = StringProperty('Default')
-    max_insert = 50000
-    requested_position = StringProperty(str(max_insert))
+    requested_position = StringProperty('0')
     current_state = StringProperty('Default')
     requested_state = StringProperty('Default')
     gatan_in = StringProperty('Default')
@@ -22,16 +21,20 @@ class ContainerGrid(GridLayout):
     connection_status = StringProperty('Disconnected')
 
 
-    def __init__(self, **kwargs):
+    def __init__(self, settings, **kwargs):
         super(ContainerGrid, self).__init__(**kwargs)
         Clock.schedule_interval(self.update_status_fields, 0.1)
+        self.settings = settings
         self.ml = MotionLink()
         self.ml.debug = True
+        self.ml.ip_address = self.settings["ip_address"]
+        self.ml.speed = self.settings["speed"]
+        self.ml.speed_out = self.settings["speed_out"]
 
     def move_in(self):
         if self.current_state is not 'Stopped':
             self.requested_state = 'Inserted'
-            if self.block_movement is False:
+            if not self.block_movement:
                 self.ml.move(1)
 
     def move_out(self):
@@ -44,13 +47,13 @@ class ContainerGrid(GridLayout):
 
     def update_status_fields(self, *args):
         self.rp = self.ml.read_rp()
-        if int(self.requested_position) > self.max_insert:
-            self.requested_position = str(self.max_insert)
+        if self.requested_position > self.settings["max_position"]:
+            self.requested_position = self.settings["max_position"]
 
-        if self.block_movement is False and int(self.rp) > int(self.requested_position):
+        if not self.block_movement and int(self.rp) > int(self.requested_position):
             self.ml.stop()
             self.block_movement = True
-        elif self.block_movement is True and int(self.rp) < int(self.requested_position):
+        elif self.block_movement and int(self.rp) < int(self.requested_position):
             self.block_movement = False
 
 
@@ -65,14 +68,14 @@ class ContainerGrid(GridLayout):
         elif self.rp is self.last_cycle_rp and int(self.rp) == 0:
             self.current_state = 'Retracted'
 
-        if self.block_movement is True:
+        if self.block_movement:
             self.movement_blocked = 'Yes'
         else:
             self.movement_blocked = 'No'
 
-        if self._is_connected == False:
+        if not self._is_connected:
             self.connection_status = 'Disconnected'
-        elif self._is_connected == True:
+        elif self._is_connected:
             self.connection_status = 'Connection established'
         # Called last
         self.last_cycle_rp = self.rp
