@@ -5,6 +5,8 @@ import random
 
 class MotionLink():
     ip_address = ''
+    speed = ''
+    speed_out = ''
     debug = False
     last_debug_pos = 0
     state = 0
@@ -34,7 +36,7 @@ class MotionLink():
                 self.state = 0
             elif command == 'RP':
                 if self.state == 1:
-                    debug_pos = self.last_debug_pos+200
+                    debug_pos = self.last_debug_pos+722
                     self.last_debug_pos = debug_pos
                     return str(debug_pos)
                 elif self.state == 2:
@@ -43,7 +45,7 @@ class MotionLink():
                     if self.last_debug_pos==0:
                         return '0'
                     else:
-                        debug_pos = self.last_debug_pos-200
+                        debug_pos = self.last_debug_pos-722
                         self.last_debug_pos = debug_pos
                         return str(debug_pos)
 
