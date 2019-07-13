@@ -1,14 +1,17 @@
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
 from kivy.properties import StringProperty, BooleanProperty, ListProperty
 from views.actionbuttons import ActionButtons
 from views.statusfields import StatusFields
 from views.labels import Labels
 from models.galil import MotionLink
 from kivy.clock import Clock
+from views.settingswindow import SettingsWindow
+
 
 
 class ContainerGrid(GridLayout):
-    rp = StringProperty('1000')
+    rp = StringProperty('0')
     last_cycle_rp = StringProperty('Default')
     block_movement = BooleanProperty(False)
     movement_blocked = StringProperty('Default')
@@ -17,9 +20,10 @@ class ContainerGrid(GridLayout):
     requested_state = StringProperty('Default')
     gatan_in = StringProperty('Default')
     gatan_veto = StringProperty('Default')
+    gatan_in_msg = StringProperty('Default')
+    gatan_veto_msg = StringProperty('Default')
     _is_connected = BooleanProperty('False')
     connection_status = StringProperty('Disconnected')
-
 
     def __init__(self, settings, **kwargs):
         super(ContainerGrid, self).__init__(**kwargs)
@@ -27,9 +31,13 @@ class ContainerGrid(GridLayout):
         self.settings = settings
         self.ml = MotionLink()
         self.ml.debug = True
+        self.ml.software_version = self.settings["software_version"]
         self.ml.ip_address = self.settings["ip_address"]
         self.ml.speed = self.settings["speed"]
         self.ml.speed_out = self.settings["speed_out"]
+        self.requested_position = str(self.settings["default_requested_position"])
+        self.settingsWindow = SettingsWindow(ml_object=self.ml)
+
 
     def move_in(self):
         if self.current_state is not 'Stopped':
@@ -77,5 +85,18 @@ class ContainerGrid(GridLayout):
             self.connection_status = 'Disconnected'
         elif self._is_connected:
             self.connection_status = 'Connection established'
+
+        if self.ml.get_gatan_in():
+            self.gatan_in_msg = 'Yes'
+        else:
+            self.gatan_in_msg ='No'
+        if self.ml.get_gatan_veto():
+            self.gatan_veto_msg = 'Yes'
+        else:
+            self.gatan_veto_msg = 'No'
+
         # Called last
         self.last_cycle_rp = self.rp
+
+    def popup(self):
+        self.settingsWindow.open()

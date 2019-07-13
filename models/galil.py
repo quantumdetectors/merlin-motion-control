@@ -4,6 +4,7 @@ import gclib
 import random
 
 class MotionLink():
+    software_version = ''
     ip_address = ''
     speed = ''
     speed_out = ''
@@ -48,6 +49,13 @@ class MotionLink():
                         debug_pos = self.last_debug_pos-722
                         self.last_debug_pos = debug_pos
                         return str(debug_pos)
+            elif command == 'MG @IN[1]':
+                return random.randint(0,1)
+            elif command == 'MG @OUT[1]':
+                return random.randint(0,1)
+            elif command[0] == 'm' and command[7] == 'd':
+                print(command)
+
 
     def move(self, cmd):
         val = self._execute('merin={}'.format(cmd))
@@ -60,3 +68,32 @@ class MotionLink():
     def read_rp(self):
         val = self._execute('RP')
         return val
+
+    def get_gatan_in(self):
+        if self.debug:
+            if self._execute('MG @IN[1]') == 1:
+                return 0
+            else:
+                return 1
+        return 0 if float(self._execute('MG @IN[1]')) else 1
+
+    def get_gatan_veto(self):
+        if self.debug:
+            return self._execute('MG @OUT[1]')
+        return int(float(self._execute('MG @OUT[1]')))
+
+    def set_speed(self, speed):
+        self._execute('merspeed={speed}'.format(speed=speed))
+
+    def set_speed(self, speed_out):
+        self._execute('merspeec={speed_out}'.format(speed_out=speed_out))
+
+    def set_values(self):
+        if self.speed > '40000' or self.speed < '1':
+            print('Speed must be an integer between 1 and 40000')
+        else:
+            self.set_speed(self.speed)
+        if self.speed_out > '40000' or self.speed_out < '1':
+            print('Speed Out must be an integer between 1 and 40000')
+        else:
+            self.set_speed_out(self.speed_out)

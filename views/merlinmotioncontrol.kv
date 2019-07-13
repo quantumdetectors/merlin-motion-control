@@ -4,6 +4,12 @@
     background_normal: ''
     background_color: .88, .88, .88, 1
 
+<ModalButton@Button>:
+    font_size: 20
+    color: 0,0,0,1
+    background_normal: ''
+    background_color: .88, .88, .88, 1
+
 <CustomTextInput@TextInput>:
     font_size: root.height*0.3
     background_color: .2, .2, .2, 1
@@ -13,15 +19,33 @@
     multiline: False
     padding: [80,25]
 
+<ModalTextInput@TextInput>:
+    id: modal
+    font_size: root.height*0.3
+    background_color: .2, .2, .2, 1
+    foreground_color: 1, 1, 1, 1
+    cursor_color: 1, 1, 1, 1
+    hint_text: 'Heading'
+    multiline: False
+    padding: [10,15,0,0]
+
 <CustomLabel@Label>:
     font_size: root.height*0.3
 
+<ModalLabel@Label>:
+    font_size: 20
+
 <ActionButtons>:
     id: buttons
-    rows: 3
+    rows: 4
     cols: 1
     spacing: 10
     padding: 0
+    CustomButton:
+        text: "Settings"
+        size_hint_x: None
+        width: 200
+        on_press: root.parent.popup()
     CustomButton:
         text: "Move in"
         size_hint_x: None
@@ -71,17 +95,17 @@
     CustomLabel:
         text: root.parent.current_state
     CustomLabel:
-        text: "0"
+        text: root.parent.gatan_in_msg
     CustomLabel:
-        text: "0"
+        text: root.parent.gatan_veto_msg
     CustomTextInput:
         id: req_pos
         focus: False
         on_focus:
             self.border_color=(.5,.5,.5,1)
             self.cursor=(0,0)
-        hint_text: root.parent.requested_position
-        on_text_validate:
+        text: root.parent.requested_position
+        on_text:
             root.parent.requested_position=self.text
     CustomLabel:
         text: root.parent.rp
@@ -94,3 +118,60 @@
 	ActionButtons:
 	Labels:
     StatusFields:
+
+<ModalView>:
+    size_hint: (None, None)
+    size: (500, 400)
+    FloatLayout:
+        size: (500, 400)
+        CustomLabel:
+            size_hint: (1, .1)
+            pos_hint: {'x':.0, 'y':.9}
+            text: "Merlin Motion Control v" + root.software_version
+        GridLayout:
+            size_hint: (1, .7)
+            pos_hint: {'x':.0, 'y':.2}
+            rows: 8
+            cols: 2
+            spacing: 10
+            padding: 0
+            CustomLabel:
+                text: "IP Address"
+            ModalTextInput:
+                focus: False
+                on_focus:
+                    self.border_color=(.5,.5,.5,1)
+                    self.cursor=(0,0)
+                text: root.ip_address
+                on_text:
+                    root.ip_address=self.text
+            CustomLabel:
+                text: "Speed"
+            ModalTextInput:
+                focus: False
+                on_focus:
+                    self.border_color=(.5,.5,.5,1)
+                    self.cursor=(0,0)
+                text: root.speed
+                on_text:
+                    root.speed=self.text
+            CustomLabel:
+                text: "Speed Out"
+            ModalTextInput:
+                focus: False
+                on_focus:
+                    self.border_color=(.5,.5,.5,1)
+                    self.cursor=(0,0)
+                text: root.speed_out
+                on_text:
+                    root.speed_out=self.text
+            CustomLabel:
+                text: "Hello"
+            ModalTextInput:
+                text: "Sup"
+
+        ModalButton:
+            size_hint: (.4, .15)
+            pos_hint: {'x':.3, 'y':0.08}
+            text: "Update values"
+            on_press: root.set_values()

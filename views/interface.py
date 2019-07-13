@@ -35,7 +35,6 @@ class MerlinMotionControlApp(App):
         self.settings["max_position"] = config.max_position()
         self.settings["software_version"] = config.software_version()
 
-
     def build(self):
         return ContainerGrid(settings=self.settings)
 
