@@ -32,7 +32,7 @@ class ContainerGrid(GridLayout):
         self.ml = MotionLink()
         self.ml.debug = True
         self.ml.software_version = self.settings["software_version"]
-        self.ml.ip_address = self.settings["ip_address"]
+        self.ml.mer_ip_address = self.settings["ip_address"]
         self.ml.speed = self.settings["speed"]
         self.ml.speed_out = self.settings["speed_out"]
         self.requested_position = str(self.settings["default_requested_position"])

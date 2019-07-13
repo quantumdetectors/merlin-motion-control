@@ -15,14 +15,16 @@ class SettingsWindow(ModalView):
     def __init__(self, ml_object, **kwargs):
         super(SettingsWindow, self).__init__(**kwargs)
         self.software_version = str(ml_object.software_version)
-        self.ip_address = str(ml_object.ip_address)
+        self.ip_address = str(ml_object.mer_ip_address)
         self.speed = str(ml_object.speed)
         self.speed_out = str(ml_object.speed_out)
         self.ml = copy.deepcopy(ml_object)
 
     def set_values(self):
-        self.ml.software_version = self.software_version
         self.ml.ip_address = self.ip_address
         self.ml.speed = self.speed
         self.ml.speed_out = self.speed_out
         self.ml.set_values()
+        self.ip_address = self.ml.mer_ip_address
+        self.speed = str(self.ml.speed)
+        self.speed_out = str(self.ml.speed_out)
