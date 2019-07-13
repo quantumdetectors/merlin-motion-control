@@ -5,6 +5,7 @@ import random
 
 class MotionLink():
     software_version = ''
+    software_title = ''
     ip_address = ''
     mer_ip_address = ''
     speed = ''

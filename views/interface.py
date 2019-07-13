@@ -13,7 +13,6 @@ from kivy.properties import StringProperty, BooleanProperty, ListProperty
 class MerlinMotionControlApp(App):
 
     title="Merlin Motion Control"
-    version=config.software_version()
     settings = dict()
     def __init__(self, **kwargs):
         super(MerlinMotionControlApp, self).__init__(**kwargs)
@@ -34,6 +33,7 @@ class MerlinMotionControlApp(App):
                 print(k,v)
         self.settings["max_position"] = config.max_position()
         self.settings["software_version"] = config.software_version()
+        self.settings["title"] = self.title
 
     def build(self):
         return ContainerGrid(settings=self.settings)

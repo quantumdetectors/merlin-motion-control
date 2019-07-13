@@ -9,12 +9,14 @@ import copy
 
 class SettingsWindow(ModalView):
     software_version = StringProperty('Def')
+    software_title = StringProperty('Def')
     ip_address = StringProperty('Def')
     speed = StringProperty('Def')
     speed_out = StringProperty('Def')
     def __init__(self, ml_object, **kwargs):
         super(SettingsWindow, self).__init__(**kwargs)
         self.software_version = str(ml_object.software_version)
+        self.software_title = str(ml_object.software_title)
         self.ip_address = str(ml_object.mer_ip_address)
         self.speed = str(ml_object.speed)
         self.speed_out = str(ml_object.speed_out)

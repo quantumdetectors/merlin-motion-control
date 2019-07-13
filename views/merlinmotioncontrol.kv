@@ -1,23 +1,40 @@
+<BackgroundColor@Widget>
+    background_color: .15, .15, .15, 1
+    canvas.before:
+        Color:
+            rgba: root.background_color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
 <CustomButton@Button>:
-    font_size: root.height*0.15
+    font_size: root.height*0.2
     color: 0,0,0,1
     background_normal: ''
     background_color: .88, .88, .88, 1
 
+<SettingsButton@Button>:
+    font_size: root.height*0.35
+    color: 0.9,0.9,0.9,1
+    foreground_color: .1,.1,.1,1
+    background_normal: ''
+    background_color: .18, .18, .18, 1
+
 <ModalButton@Button>:
-    font_size: 20
+    font_size: 18
     color: 0,0,0,1
     background_normal: ''
-    background_color: .88, .88, .88, 1
+    #background_color: .88, .88, .88, 1
 
 <CustomTextInput@TextInput>:
     font_size: root.height*0.3
     background_color: .2, .2, .2, 1
-    foreground_color: 1, 1, 1, 1
+    foreground_color: .91, .91, .91, 1
     cursor_color: 1, 1, 1, 1
     hint_text: 'Heading'
     multiline: False
-    padding: [80,25]
+    padding: [20,root.height*0.3,0,0]
+    spacing:[0, 0, 20, 0]
 
 <ModalTextInput@TextInput>:
     id: modal
@@ -27,7 +44,7 @@
     cursor_color: 1, 1, 1, 1
     hint_text: 'Heading'
     multiline: False
-    padding: [10,15,0,0]
+    padding: [10,root.height*0.32,0,0]
 
 <CustomLabel@Label>:
     font_size: root.height*0.3
@@ -37,37 +54,38 @@
 
 <ActionButtons>:
     id: buttons
-    rows: 4
+    rows: 1
     cols: 1
     spacing: 10
-    padding: 0
-    CustomButton:
-        text: "Settings"
-        size_hint_x: None
-        width: 200
-        on_press: root.parent.popup()
-    CustomButton:
-        text: "Move in"
-        size_hint_x: None
-        width: 200
-        on_press: root.parent.move_in()
-    CustomButton:
-        text: "Move out"
-        size_hint_x: None
-        width: 200
-        on_press: root.parent.move_out()
-    CustomButton:
-        text: "Stop"
-        size_hint_x: None
-        width: 200
-        on_press: root.parent.stop()
+    padding: 10
+    FloatLayout:
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: (1, .65)
+            pos_hint: {'x':.0, 'y':.0}
+            spacing: 10
+            padding: 10
+            CustomButton:
+                text: "Move in"
+                size_hint_x: None
+                width: 200
+                on_press: root.parent.parent.move_in()
+            CustomButton:
+                text: "Move out"
+                size_hint_x: None
+                width: 200
+                on_press: root.parent.parent.move_out()
+            CustomButton:
+                text: "Stop"
+                size_hint_x: None
+                width: 200
+                on_press: root.parent.parent.stop()
 
 <Labels>:
     rows: 7
     cols: 1
     spacing: 10
     padding: 0
-
     CustomLabel:
         text: "Movement Blocked"
     CustomLabel:
@@ -89,49 +107,83 @@
     spacing: 10
     padding: 0
     CustomLabel:
-        text: root.parent.movement_blocked
+        text: root.parent.parent.movement_blocked
     CustomLabel:
-        text: root.parent.requested_state
+        text: root.parent.parent.requested_state
     CustomLabel:
-        text: root.parent.current_state
+        text: root.parent.parent.current_state
     CustomLabel:
-        text: root.parent.gatan_in_msg
+        text: root.parent.parent.gatan_in_msg
     CustomLabel:
-        text: root.parent.gatan_veto_msg
+        text: root.parent.parent.gatan_veto_msg
     CustomTextInput:
         id: req_pos
         focus: False
         on_focus:
             self.border_color=(.5,.5,.5,1)
             self.cursor=(0,0)
-        text: root.parent.requested_position
+        text: root.parent.parent.requested_position
         on_text:
-            root.parent.requested_position=self.text
+            root.parent.parent.requested_position=self.text
     CustomLabel:
-        text: root.parent.rp
+        text: root.parent.parent.rp
 
 <ContainerGrid>:
     id: container
-	orientation: 'horizontal'
-    cols: 3
-    rows: 1
-	ActionButtons:
-	Labels:
-    StatusFields:
+    canvas.before:
+        Color:
+            rgba: .22,.22,.22,1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    ActionBar:
+        size_hint: (1, .1)
+        pos_hint: {'x':.0, 'y':0.9}
+        pos_hint: {'top':1}
+        ActionView:
+            use_separator: True
+            ActionPrevious:
+                title: "Merlin Motion Control"
+                with_previous: False
+                app_icon: 'views/static/images/white_atom.png'
+                app_icon_height: 40
+                app_icon_width: 40
+            ActionOverflow:
+            ActionButton:
+                text: "Info"
+                size_hint_x: None
+                width: 200
+                on_press: root.infowindow()
+            ActionButton:
+                text: "Settings"
+                size_hint_x: None
+                width: 200
+                on_press: root.popup()
 
-<ModalView>:
+    GridLayout:
+        size_hint: (1, .9)
+        pos_hint: {'x':.0, 'y':0.0}
+        orientation: 'horizontal'
+        cols: 3
+        rows: 1
+        ActionButtons:
+        Labels:
+        StatusFields:
+
+
+<SettingsWindow>:
     size_hint: (None, None)
-    size: (500, 400)
+    size: (400, 300)
     FloatLayout:
-        size: (500, 400)
+        size: (400, 300)
         CustomLabel:
-            size_hint: (1, .1)
-            pos_hint: {'x':.0, 'y':.9}
-            text: "Merlin Motion Control v" + root.software_version
+            size_hint: (1, .15)
+            pos_hint: {'x':.0, 'y':.85}
+            text: root.software_title + " v" + root.software_version
         GridLayout:
             size_hint: (1, .7)
-            pos_hint: {'x':.0, 'y':.2}
-            rows: 8
+            pos_hint: {'x':.0, 'y':.16}
+            rows: 7
             cols: 2
             spacing: 10
             padding: 0
@@ -165,13 +217,19 @@
                 text: root.speed_out
                 on_text:
                     root.speed_out=self.text
-            CustomLabel:
-                text: "Hello"
-            ModalTextInput:
-                text: "Sup"
 
         ModalButton:
             size_hint: (.4, .15)
             pos_hint: {'x':.3, 'y':0.08}
             text: "Update values"
             on_press: root.set_values()
+
+<InfoWindow>:
+    size_hint: (None, None)
+    size: (300, 150)
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: root.software_title + " v" + root.software_version
+        Label:
+            text: "Quantum Detectors Ltd. (c) " + root.copyright_date
