@@ -87,12 +87,11 @@ def default_speed_out():
     return verified_input
 
 def load_default_settings():
-    return {
-                "ip_address":default_ip(),
-                "default_requested_position":default_requested_position(),
-                "speed":default_speed(),
-                "speed_out":default_speed_out()
-            }
+    return {"ip_address":default_ip(),
+            "default_requested_position":default_requested_position(),
+            "speed":default_speed(),
+            "speed_out":default_speed_out()
+           }
 
 def load_user_settings():
     settings = dict()
@@ -132,5 +131,3 @@ def db_password():
     user_input = os.environ.get('DATABASE_PASSWORD', None)
     verified_input = user_input
     return verified_input
-
-# User settings
