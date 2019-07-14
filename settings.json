@@ -1,6 +1,6 @@
 {
-    "ip_address": "192.168.0.150",
-    "default_requested_position": 50000,
-    "speed": 20000,
-    "speed_out": 20000
+  "ip_address": "192.168.0.10",
+  "default_requested_position": 50000,
+  "speed": 20000,
+  "speed_out": 20000
 }

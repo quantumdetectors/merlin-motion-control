@@ -3,14 +3,15 @@
 import os
 import json
 from models.verify_ip import is_valid_ipv4_address
-from models.verify_env import import_check
+from models import verify_env
+from models import verify_settings
 
 
 def software_version():
     key = 'SOFTWARE_VERSION'
     user_input = os.environ.get(key, None)
     try:
-        import_check({key:user_input})
+        verify_env.import_check({key:user_input})
         verified_input = user_input
     except TypeError as e:
         print(e.__class__, "".join(e.args))
@@ -19,88 +20,107 @@ def software_version():
 
 def max_position():
     key = 'MAXIMUM_POSITION'
-    user_input = os.environ.get(key, None)
+    user_input = int(os.environ.get(key, None))
     try:
-        import_check({key:user_input})
+        verify_env.import_check({key:user_input})
         verified_input = user_input
     except TypeError as e:
         print(e.__class__, "".join(e.args))
-        verified_input = '280000'
+        verified_input = 1
     return verified_input
 
 def path_user_settings():
     key = 'USER_CONFIG'
     user_input = os.environ.get(key, None)
     try:
-        import_check({key:user_input})
+        verify_env.import_check({key:user_input})
         verified_input = user_input
-    except TypeError as e:
+        file_exists = 1
+    except FileNotFoundError as e:
         print(e.__class__, "".join(e.args))
-        verified_input = 'settings.json'
-    return verified_input
+        verified_input = user_input
+        file_exists = 0
+    return [verified_input, file_exists]
 
 def default_ip():
     key = 'IP_ADDRESS'
     user_input = os.environ.get(key, None)
     try:
-        import_check({key:user_input})
+        verify_env.import_check({key:user_input})
         verified_input = user_input
     except TypeError as e:
         print(e.__class__, "".join(e.args))
-        verified_input = '192.168.0.150'
+        verified_input = '1.1.1.1'
     return verified_input
 
 def default_requested_position():
     key = 'DEFAULT_REQUESTED_POSITION'
-    user_input = os.environ.get(key, None)
+    user_input = int(os.environ.get(key, None))
     try:
-        import_check({key:user_input})
+        verify_env.import_check({key:user_input})
         verified_input = user_input
     except TypeError as e:
         print(e.__class__, "".join(e.args))
-        verified_input = '180000'
+        verified_input = 1
     return verified_input
 
 def default_speed():
     key = 'SPEED'
-    user_input = os.environ.get(key, None)
+    user_input = int(os.environ.get(key, None))
     try:
-        import_check({key:user_input})
+        verify_env.import_check({key:user_input})
         verified_input = user_input
     except TypeError as e:
         print(e.__class__, "".join(e.args))
-        verified_input = '20000'
+        verified_input = 1
     return verified_input
 
 def default_speed_out():
     key = 'SPEED_OUT'
-    user_input = os.environ.get(key, None)
+    user_input = int(os.environ.get(key, None))
     try:
-        import_check({key:user_input})
+        verify_env.import_check({key:user_input})
         verified_input = user_input
     except TypeError as e:
         print(e.__class__, "".join(e.args))
-        verified_input = '20000'
+        verified_input = 1
     return verified_input
+
+def load_default_settings():
+    return {
+                "ip_address":default_ip(),
+                "default_requested_position":default_requested_position(),
+                "speed":default_speed(),
+                "speed_out":default_speed_out()
+            }
 
 def load_user_settings():
     settings = dict()
-    path = path_user_settings()
-    if os.path.isfile(path):
-        with open(path) as json_file:
-            user_settings = json.load(json_file)
-            for k,v in user_settings.items():
-                if k == "ip_address":
-                    if is_valid_ipv4_address(v):
-                        settings.update({k:v})
-                    else:
-                        raise AttributeError("Invalid IP address. ", v, " is not a valid IPv4 address.")
-                elif isinstance(v,int):
-                    settings.update({k:v})
-                else:
-                    raise AttributeError("Invalid type. ", k," requires an integer value but has been set to ", v, ".")
+    [path,path_exists] = path_user_settings()
+    if path_exists == 0:
+        settings = load_default_settings()
     else:
-        raise FileNotFoundError("No settings file found. Using default settings. Missing file ", path)
+        with open(path, 'r') as json_file:
+            user_settings = json.load(json_file)
+            try:
+                verify_settings.import_check(user_settings)
+            except TypeError as e:
+                print(e.__class__, "".join(e.args))
+                user_settings["speed"] = default_speed()
+            except BlockingIOError as e:
+                print(e.__class__, "".join(e.args))
+                user_settings["speed_out"] = default_speed_out()
+            except ValueError as e:
+                print(e.__class__, "".join(e.args))
+                user_settings["default_requested_position"] = default_requested_position()
+            except AttributeError as e:
+                print(e.__class__, "".join(e.args))
+                user_settings["ip_address"] = default_ip()
+            finally:
+                settings = user_settings
+
+    with open(path, 'w') as json_file:
+        json.dump(settings, json_file, indent=2)
     return settings
 
 

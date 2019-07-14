@@ -59,8 +59,8 @@ class ContainerGrid(FloatLayout):
 
     def update_status_fields(self, *args):
         self.rp = self.ml.read_rp()
-        if self.requested_position > self.settings["max_position"]:
-            self.requested_position = self.settings["max_position"]
+        if int(self.requested_position) > self.settings["max_position"]:
+            self.requested_position = str(self.settings["max_position"])
 
         if not self.block_movement and int(self.rp) > int(self.requested_position):
             self.ml.stop()

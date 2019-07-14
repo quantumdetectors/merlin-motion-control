@@ -6,8 +6,8 @@ def import_check(settings):
     if isinstance(settings,dict):
         key = "MAXIMUM_POSITION"
         if key in settings and\
-          (not isinstance(settings["MAXIMUM_POSITION"], str) or\
-          not int(settings["MAXIMUM_POSITION"]) > 0):
+          (not isinstance(settings["MAXIMUM_POSITION"], int) or\
+          not settings["MAXIMUM_POSITION"] > 0):
             raise TypeError("MAXIMUM_POSITION needs to be stated in the .env file \
                 as a positive integer on the form: MAXIMUM_POSITION=50000")
 
@@ -26,22 +26,22 @@ def import_check(settings):
 
         key = "DEFAULT_REQUESTED_POSITION"
         if key in settings and\
-          (not isinstance(settings["DEFAULT_REQUESTED_POSITION"], str) or\
-          not int(settings["DEFAULT_REQUESTED_POSITION"]) > 0):
+          (not isinstance(settings["DEFAULT_REQUESTED_POSITION"], int) or\
+          not settings["DEFAULT_REQUESTED_POSITION"] > 0):
             raise TypeError("DEFAULT_REQUESTED_POSITION needs to be stated in the .env file \
                 as a positive integer on the form: DEFAULT_REQUESTED_POSITION=50000")
 
         key = "SPEED"
         if key in settings and\
-          (not isinstance(settings["SPEED"], str) or\
-          not int(settings["SPEED"]) > 0):
+          (not isinstance(settings["SPEED"], int) or\
+          not settings["SPEED"] > 0):
             raise TypeError("SPEED needs to be stated in the .env file \
                 as an integer on the form: SPEED=20000")
 
         key = "SPEED_OUT"
         if key in settings and\
-          (not isinstance(settings["SPEED_OUT"], str) or\
-          not int(settings["SPEED_OUT"]) > 0):
+          (not isinstance(settings["SPEED_OUT"], int) or\
+          not settings["SPEED_OUT"] > 0):
             raise TypeError("SPEED_OUT needs to be stated in the .env file \
                 as an integer on the form: SPEED_OUT=20000")
 
