@@ -1,19 +1,25 @@
+"""Add functionality for main window.
+
+Bind button functionality between interface and MotionLink options.
+Update status fields.
+"""
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.label import Label
 from kivy.properties import StringProperty, BooleanProperty, ListProperty
+from kivy.uix.label import Label
+from kivy.clock import Clock
+from views.settingswindow import SettingsWindow
+from views.infowindow import InfoWindow
 from views.actionbuttons import ActionButtons
 from views.statusfields import StatusFields
 from views.labels import Labels
 from models.galil import MotionLink
-from kivy.clock import Clock
-from views.settingswindow import SettingsWindow
-from views.infowindow import InfoWindow
-
 
 
 class ContainerGrid(FloatLayout):
+    """Add layout and functionality to the main app window."""
+
     rp = StringProperty('0')
-    last_cycle_rp = StringProperty('Default')
+    _rp = StringProperty('Default')
     block_movement = BooleanProperty(False)
     movement_blocked = StringProperty('Default')
     requested_position = StringProperty('0')
@@ -27,6 +33,14 @@ class ContainerGrid(FloatLayout):
     connection_status = StringProperty('Disconnected')
 
     def __init__(self, settings, **kwargs):
+        """Initialize layout.
+
+        Create MotionLink object and initialize it with values from config.py.
+        Initialize settings and info windows.
+
+        The super method must not be changed since that is likely to
+        impact the functionality of the Kivy framework.
+        """
         super(ContainerGrid, self).__init__(**kwargs)
         Clock.schedule_interval(self.update_status_fields, 0.1)
         self.settings = settings
@@ -37,47 +51,84 @@ class ContainerGrid(FloatLayout):
         self.ml.mer_ip_address = self.settings["ip_address"]
         self.ml.speed = self.settings["speed"]
         self.ml.speed_out = self.settings["speed_out"]
-        self.requested_position = str(self.settings["default_requested_position"])
+        self.requested_position = str(
+            self.settings["default_requested_position"]
+        )
         self.title = self.settings["title"]
         self.settingsWindow = SettingsWindow(ml_object=self.ml)
         self.infoWindow = InfoWindow(ml_object=self.ml)
 
-
     def move_in(self):
+        """Call move in function on the MotionLink object."""
         if self.current_state is not 'Stopped':
             self.requested_state = 'Inserted'
             if not self.block_movement:
                 self.ml.move(1)
 
     def move_out(self):
+        """Call move in function on the MotionLink object."""
         self.requested_state = 'Retracted'
         self.ml.move(0)
 
     def stop(self):
+        """Call stop function on the MotionLink object."""
         self.requested_state = 'Stopped'
         self.ml.stop()
 
     def update_status_fields(self, *args):
+        """Call read_rp on the MotionLink object and update status fields.
+
+        Method called by clock set in __init__.
+
+        Set status fields depending on the change in position between each
+          clock cycle.
+
+        requested_position: Set by the user through settings.json or by
+          by textinput when the app is running.
+
+        rp: Relative Position. Related to number of pulses sent to the
+            controller of the MotionLink stepper motor. 3200 pulses
+            equals 1 mm on the linear stage.
+
+        requested_state: 'Stopped' if Stop button is pressed
+                         'Moving' if rp in last cycle (_rp) != rp from current
+                         'Inserted' if _rp == rp and rp > 0
+                         'Max Insertion' if rp >= max_position set in .env file
+                         'Retracted' if rp == 0 and rp == _rp
+
+        connection_status: 'Connection established' if _is_connected is True.
+                           'Disconnected' if _is_conneceted is False.
+
+        gatan_in_msg: 'Yes' if get_gatan_in() on MotionLink object is True.
+                      'No' if False.
+
+        gatan_veto_msg: 'In' if get_gatan_veto() call to MotionLink
+                          object is True.
+                        'No' if False.
+
+        """
         self.rp = self.ml.read_rp()
         if int(self.requested_position) > self.settings["max_position"]:
             self.requested_position = str(self.settings["max_position"])
 
-        if not self.block_movement and int(self.rp) > int(self.requested_position):
+        if not self.block_movement and int(self.rp) > \
+                int(self.requested_position):
             self.ml.stop()
             self.block_movement = True
-        elif self.block_movement and int(self.rp) < int(self.requested_position):
+        elif self.block_movement and int(self.rp) < \
+                int(self.requested_position):
             self.block_movement = False
-
 
         if self.requested_state is 'Stopped':
             self.current_state = self.requested_state
-        elif self.rp is self.last_cycle_rp and int(self.rp) > 0:
+        elif self.rp is self._rp and int(self.rp) >= \
+                self.settings["max_position"]:
+            self.current_state = 'Max Insertion'
+        elif self.rp is self._rp and int(self.rp) > 0:
             self.current_state = 'Inserted'
-        elif self.rp is self.last_cycle_rp and int(self.rp) > 0 and self.block_movement == 1:
-            self.current_state = 'Fully Inserted'
-        elif self.rp is not self.last_cycle_rp:
+        elif self.rp is not self._rp:
             self.current_state = 'Moving'
-        elif self.rp is self.last_cycle_rp and int(self.rp) == 0:
+        elif self.rp is self._rp and int(self.rp) == 0:
             self.current_state = 'Retracted'
 
         if self.block_movement:
@@ -93,17 +144,19 @@ class ContainerGrid(FloatLayout):
         if self.ml.get_gatan_in():
             self.gatan_in_msg = 'Yes'
         else:
-            self.gatan_in_msg ='No'
+            self.gatan_in_msg = 'No'
         if self.ml.get_gatan_veto():
             self.gatan_veto_msg = 'Yes'
         else:
             self.gatan_veto_msg = 'No'
 
         # Called last
-        self.last_cycle_rp = self.rp
+        self._rp = self.rp
 
-    def popup(self):
+    def settingswindow(self):
+        """Open Settings window."""
         self.settingsWindow.open()
 
     def infowindow(self):
+        """Open Info window."""
         self.infoWindow.open()
