@@ -3,41 +3,84 @@
 import os
 import json
 from models.verify_ip import is_valid_ipv4_address
+from models.verify_env import import_check
 
 
 def software_version():
-    user_input = os.environ.get('SOFTWARE_VERSION', None)
-    verified_input = user_input
+    key = 'SOFTWARE_VERSION'
+    user_input = os.environ.get(key, None)
+    try:
+        import_check({key:user_input})
+        verified_input = user_input
+    except TypeError as e:
+        print(e.__class__, "".join(e.args))
+        verified_input = '0.9'
     return verified_input
 
 def max_position():
-    user_input = os.environ.get('MAXIMUM_POSITION', None)
-    verified_input = user_input
+    key = 'MAXIMUM_POSITION'
+    user_input = os.environ.get(key, None)
+    try:
+        import_check({key:user_input})
+        verified_input = user_input
+    except TypeError as e:
+        print(e.__class__, "".join(e.args))
+        verified_input = '280000'
     return verified_input
 
 def path_user_settings():
-    user_input = os.environ.get('USER_CONFIG', None)
-    verified_input = user_input
+    key = 'USER_CONFIG'
+    user_input = os.environ.get(key, None)
+    try:
+        import_check({key:user_input})
+        verified_input = user_input
+    except TypeError as e:
+        print(e.__class__, "".join(e.args))
+        verified_input = 'settings.json'
     return verified_input
 
 def default_ip():
-    user_input = os.environ.get('IP_ADDRESS', None)
-    verified_input = user_input
+    key = 'IP_ADDRESS'
+    user_input = os.environ.get(key, None)
+    try:
+        import_check({key:user_input})
+        verified_input = user_input
+    except TypeError as e:
+        print(e.__class__, "".join(e.args))
+        verified_input = '192.168.0.150'
     return verified_input
 
 def default_requested_position():
-    user_input = os.environ.get('DEFAULT_REQUESTED_POSITION', None)
-    verified_input = user_input
+    key = 'DEFAULT_REQUESTED_POSITION'
+    user_input = os.environ.get(key, None)
+    try:
+        import_check({key:user_input})
+        verified_input = user_input
+    except TypeError as e:
+        print(e.__class__, "".join(e.args))
+        verified_input = '180000'
     return verified_input
 
 def default_speed():
-    user_input = os.environ.get('SPEED', None)
-    verified_input = user_input
+    key = 'SPEED'
+    user_input = os.environ.get(key, None)
+    try:
+        import_check({key:user_input})
+        verified_input = user_input
+    except TypeError as e:
+        print(e.__class__, "".join(e.args))
+        verified_input = '20000'
     return verified_input
 
 def default_speed_out():
-    user_input = os.environ.get('SPEED_OUT', None)
-    verified_input = user_input
+    key = 'SPEED_OUT'
+    user_input = os.environ.get(key, None)
+    try:
+        import_check({key:user_input})
+        verified_input = user_input
+    except TypeError as e:
+        print(e.__class__, "".join(e.args))
+        verified_input = '20000'
     return verified_input
 
 def load_user_settings():
