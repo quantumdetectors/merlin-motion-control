@@ -1,13 +1,8 @@
 import kivy
 kivy.require("1.11.1")
 from kivy.app import App
-from kivy.uix.gridlayout import GridLayout
 import config
 from views.containergrid import ContainerGrid
-from views.actionbuttons import ActionButtons
-from views.statusfields import StatusFields
-from views.labels import Labels
-from kivy.properties import StringProperty, BooleanProperty, ListProperty
 
 
 class MerlinMotionControlApp(App):
