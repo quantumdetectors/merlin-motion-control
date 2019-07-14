@@ -121,6 +121,10 @@ def load_user_settings():
 
     with open(path, 'w') as json_file:
         json.dump(settings, json_file, indent=2)
+
+    settings["max_position"] = max_position()
+    settings["software_version"] = software_version()
+    settings["title"] = "Merlin Motion Control"
     return settings
 
 
