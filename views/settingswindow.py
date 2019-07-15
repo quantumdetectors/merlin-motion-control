@@ -29,7 +29,7 @@ class SettingsWindow(ModalView):
         self.ip_address = str(ml_object.mer_ip_address)
         self.speed = str(ml_object.speed)
         self.speed_out = str(ml_object.speed_out)
-        self.ml = copy.deepcopy(ml_object)
+        self.ml = ml_object
 
     def set_values(self):
         """Update values of MotionLink object when called.
@@ -37,10 +37,11 @@ class SettingsWindow(ModalView):
         After MotionLink object has been updated, update own values based on
           the current ones of the MotionLink object.
         """
-        self.ml.ip_address = self.ip_address
+        self.ml.mer_ip_address = self.ip_address
         self.ml.speed = self.speed
         self.ml.speed_out = self.speed_out
-        self.ml.set_values()
+        self.ml.update_ml()
+        self.ml.write()
         self.ip_address = self.ml.mer_ip_address
         self.speed = str(self.ml.speed)
         self.speed_out = str(self.ml.speed_out)

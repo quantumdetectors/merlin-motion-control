@@ -15,7 +15,7 @@ from views.labels import Labels
 from models.rw_galil import MotionLinkInterface
 import threading
 import time
-
+CLOCK_SPEED = 0.00001
 
 
 class ContainerGrid(FloatLayout):
@@ -45,7 +45,7 @@ class ContainerGrid(FloatLayout):
         impact the functionality of the Kivy framework.
         """
         super(ContainerGrid, self).__init__(**kwargs)
-        Clock.schedule_interval(self.update_status_fields, 0.1)
+        Clock.schedule_interval(self.update_status_fields, CLOCK_SPEED)
         self.settings = settings
         self.ml_interface = MotionLinkInterface()
         self.ml_interface.debug = False
@@ -60,7 +60,9 @@ class ContainerGrid(FloatLayout):
         self.title = self.ml_interface.software_title
         self.settingsWindow = SettingsWindow(ml_object=self.ml_interface)
         self.infoWindow = InfoWindow(ml_object=self.ml_interface)
-        
+        self.ml_interface.update_ml()
+        self.ml_interface.write()
+
 
     def move_in(self):
         """Call move in function on the MotionLink object."""
@@ -115,6 +117,9 @@ class ContainerGrid(FloatLayout):
 
         """
         self.rp = self.ml_interface.rp
+
+        if self.requested_position is '':
+            self.requested_position = '0'
 
         if int(self.requested_position) > self.settings["max_position"]:
             self.requested_position = str(self.settings["max_position"])

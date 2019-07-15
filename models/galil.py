@@ -20,10 +20,8 @@ class MotionLink():
 
     def connect(self):
         try:
-            print('Trying to connect...')
             self.g.GOpen('{} --direct -s ALL'.format(self.mer_ip_address))
             self._connected = True
-            print('Connection established.')
         except gclib.GclibError as e:
             print('Could not establish a connection, trying again:', e)
             self._connected = False
@@ -35,10 +33,7 @@ class MotionLink():
     def _execute(self,command):
         if not self.debug:
             try:
-                if is_valid_ipv4_address(self.mer_ip_address):
-                    self.g.GOpen('{} --direct -s ALL'.format(self.mer_ip_address))
-                else:
-                    raise AttributeError("Invalid IP address. ", v, " is not a valid IPv4 address.")
+                self.g.GOpen('{} --direct -s ALL'.format(self.mer_ip_address))
                 self.g.timeout = 5000
                 val = self.g.GCommand(command)
                 self.g.timeout = 5000
