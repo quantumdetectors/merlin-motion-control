@@ -11,8 +11,8 @@ merspeec=20000
 merin=0
 lmerin=0
 merstat=0
-meroff=3000
-decel=30000
+meroff=0
+decel=300000
 
 IF (_LRX=0)
 	MG "Moving off limit"
@@ -48,7 +48,7 @@ IF (merin <> lmerin)
                 OB1, 1
                 merin=0
             ELSE
-                JS #STAHP
+                JS #STP
             ENDIF
         ELSE
             JS #HOME
@@ -61,7 +61,7 @@ WT1000
 JP#LOOP
 EN
 
-#STAHP
+#STP
 'MG "Stop"
 #Q
 IF (merin <> 2)
