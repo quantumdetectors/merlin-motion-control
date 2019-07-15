@@ -6,13 +6,16 @@ Update status fields.
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty, ListProperty
 from kivy.uix.label import Label
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from views.settingswindow import SettingsWindow
 from views.infowindow import InfoWindow
 from views.actionbuttons import ActionButtons
 from views.statusfields import StatusFields
 from views.labels import Labels
-from models.galil import MotionLink
+from models.rw_galil import MotionLinkInterface
+import threading
+import time
+
 
 
 class ContainerGrid(FloatLayout):
@@ -44,36 +47,39 @@ class ContainerGrid(FloatLayout):
         super(ContainerGrid, self).__init__(**kwargs)
         Clock.schedule_interval(self.update_status_fields, 0.1)
         self.settings = settings
-        self.ml = MotionLink()
-        self.ml.debug = True
-        self.ml.software_version = self.settings["software_version"]
-        self.ml.software_title = self.settings["title"]
-        self.ml.mer_ip_address = self.settings["ip_address"]
-        self.ml.speed = self.settings["speed"]
-        self.ml.speed_out = self.settings["speed_out"]
+        self.ml_interface = MotionLinkInterface()
+        self.ml_interface.debug = False
+        self.ml_interface.software_version = self.settings["software_version"]
+        self.ml_interface.software_title = self.settings["title"]
+        self.ml_interface.mer_ip_address = self.settings["ip_address"]
+        self.ml_interface.speed = self.settings["speed"]
+        self.ml_interface.speed_out = self.settings["speed_out"]
         self.requested_position = str(
             self.settings["default_requested_position"]
         )
-        self.title = self.settings["title"]
-        self.settingsWindow = SettingsWindow(ml_object=self.ml)
-        self.infoWindow = InfoWindow(ml_object=self.ml)
+        self.title = self.ml_interface.software_title
+        self.settingsWindow = SettingsWindow(ml_object=self.ml_interface)
+        self.infoWindow = InfoWindow(ml_object=self.ml_interface)
+        
 
     def move_in(self):
         """Call move in function on the MotionLink object."""
         if self.current_state is not 'Stopped':
             self.requested_state = 'Inserted'
             if not self.block_movement:
-                self.ml.move(1)
+                self.ml_interface.move(1)
 
     def move_out(self):
         """Call move in function on the MotionLink object."""
         self.requested_state = 'Retracted'
-        self.ml.move(0)
+        self.ml_interface.move(0)
 
     def stop(self):
         """Call stop function on the MotionLink object."""
         self.requested_state = 'Stopped'
-        self.ml.stop()
+        self.ml_interface.stop()
+
+
 
     def update_status_fields(self, *args):
         """Call read_rp on the MotionLink object and update status fields.
@@ -90,7 +96,8 @@ class ContainerGrid(FloatLayout):
             controller of the MotionLink stepper motor. 3200 pulses
             equals 1 mm on the linear stage.
 
-        requested_state: 'Stopped' if Stop button is pressed
+        requested_state/
+        current_state:   'Stopped' if Stop button is pressed
                          'Moving' if rp in last cycle (_rp) != rp from current
                          'Inserted' if _rp == rp and rp > 0
                          'Max Insertion' if rp >= max_position set in .env file
@@ -107,13 +114,14 @@ class ContainerGrid(FloatLayout):
                         'No' if False.
 
         """
-        self.rp = self.ml.read_rp()
+        self.rp = self.ml_interface.rp
+
         if int(self.requested_position) > self.settings["max_position"]:
             self.requested_position = str(self.settings["max_position"])
 
         if not self.block_movement and int(self.rp) > \
                 int(self.requested_position):
-            self.ml.stop()
+            self.ml_interface.stop()
             self.block_movement = True
         elif self.block_movement and int(self.rp) < \
                 int(self.requested_position):
@@ -141,11 +149,11 @@ class ContainerGrid(FloatLayout):
         elif self._is_connected:
             self.connection_status = 'Connection established'
 
-        if self.ml.get_gatan_in():
+        if self.ml_interface.gatan_in:
             self.gatan_in_msg = 'Yes'
         else:
             self.gatan_in_msg = 'No'
-        if self.ml.get_gatan_veto():
+        if self.ml_interface.gatan_veto:
             self.gatan_veto_msg = 'Yes'
         else:
             self.gatan_veto_msg = 'No'

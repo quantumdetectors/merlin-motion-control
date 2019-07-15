@@ -15,27 +15,49 @@ class MotionLink():
     debug = False
     last_debug_pos = 0
     state = 0
+    _connected = False
+    g = gclib.py()
+
+    def connect(self):
+        try:
+            print('Trying to connect...')
+            self.g.GOpen('{} --direct -s ALL'.format(self.mer_ip_address))
+            self._connected = True
+            print('Connection established.')
+        except gclib.GclibError as e:
+            print('Could not establish a connection, trying again:', e)
+            self._connected = False
+        except Exception:
+            self._connected = False
+        finally:
+            self.g.GClose()
+
     def _execute(self,command):
         if not self.debug:
             try:
-                g = gclib.py()
                 if is_valid_ipv4_address(self.mer_ip_address):
-                    g.GOpen("".join([mer_ip_address, ' --direct -s ALL']))
+                    self.g.GOpen('{} --direct -s ALL'.format(self.mer_ip_address))
                 else:
                     raise AttributeError("Invalid IP address. ", v, " is not a valid IPv4 address.")
-                g.timeout = 5000
-                val = g.GCommand(command)
-                g.timeout = 5000
+                self.g.timeout = 5000
+                val = self.g.GCommand(command)
+                self.g.timeout = 5000
                 return val
             except gclib.GclibError as e:
-                print('Unexpected GclibError:', e)
+                print('Disconnecting device due to unexpected GclibError:', e)
+                self._connected = False
+                return '0'
+            except Exception:
+                print('Untreated exception in Galil class. Device disconnected.')
+                self._connected = False
+                return '0'
             finally:
-                g.GClose()
+                self.g.GClose()
         else:
             # Move in
             if command == 'merin=1':
                 self.state = 1
-            elif command == 'DCX=100000;STX;merstat=3':
+            elif command == 'merin=2':
                 self.state = 2
             elif command == 'merin=0':
                 self.state = 0
@@ -77,7 +99,8 @@ class MotionLink():
         return val
 
     def stop(self):
-        val = self._execute('DCX=100000;STX;merstat=3')
+        #val = self._execute('DCX=100000;STX;merstat=3')
+        val = self._execute('merin=2')
         return val
 
     def read_rp(self):
