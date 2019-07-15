@@ -16,7 +16,7 @@ The Merlin Motion Control app is used in conjunction with Quantum Detector's ret
 
 On start up the main interface opens up, from where you have access to all the relevant status fields and buttons for safely controlling your retractable Merlin detector using the MotionPod.
 
-[](views/static/images/main_window.png)
+![](views/static/images/main_window.png)
 
 ### Buttons
 - Move in: Moves the detector in. When it reaches the requested position a stop command is sent to the MotionLink unit. When the current state is 'Stopped', 'Move In' is interlocked to prevent accidentally moving the detector in further. The actual position it will reach is speed and update frequency dependent, and slower speeds imply a higher degree of accuracy. At a speed of 20000 units per second, expect a 2000-3000 difference in requested position and actual position. The clock speed is hard coded and is not accessible to the user. 3200 units equals 1 mm in lateral displacement of the Merlin.
