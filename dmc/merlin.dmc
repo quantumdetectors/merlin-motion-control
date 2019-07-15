@@ -12,7 +12,7 @@ merin=0
 lmerin=0
 merstat=0
 meroff=0
-decel=300000
+decel=2000000
 
 IF (_LRX=0)
 	MG "Moving off limit"
@@ -35,20 +35,20 @@ IF (merin <> lmerin)
 	lmerin=merin
 	'MG "Mer changed"
 	'MG merin
-	IF (merin=1)
+	IF (merin=2)
 		IF ((@IN[1]=0)
 			OB1, 1
 			merin=0
 		ELSE
-			JS #MOIN
+			JS #STP
 		ENDIF
 	ELSE
-        IF (merin=2)
+        IF (merin=1)
             IF ((@IN[1]=0)
                 OB1, 1
                 merin=0
             ELSE
-                JS #STP
+                JS #MOIN
             ENDIF
         ELSE
             JS #HOME
