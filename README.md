@@ -16,7 +16,7 @@ The Merlin Motion Control app is used in conjunction with Quantum Detector's ret
 
 On start up the main interface opens up, from where you have access to all the relevant status fields and buttons for safely controlling your retractable Merlin detector using the MotionPod.
 
-<img src="views/static/images/main_window.png =250x" alt="alt text" width="250" height="230">
+<img src="views/static/images/main_window.png" alt="alt text" width="250" height="230">
 
 
 ### Buttons
