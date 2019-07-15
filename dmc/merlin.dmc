@@ -1,0 +1,198 @@
+#AUTO
+OB1, 1
+
+AG0
+YA 16
+SH
+WT50
+
+merspeed=20000
+merspeec=20000
+merin=0
+lmerin=0
+merstat=0
+meroff=3000
+decel=30000
+
+IF (_LRX=0)
+	MG "Moving off limit"
+	JS#HOME2
+ENDIF
+
+
+
+JS#HOME
+JS#PNEU
+
+AC1000000
+DC=decel
+
+JP#LOOP
+
+#LOOP
+'MG "Loop"
+IF (merin <> lmerin)
+	lmerin=merin
+	'MG "Mer changed"
+	'MG merin
+	IF (merin=1)
+		IF ((@IN[1]=0)
+			OB1, 1
+			merin=0
+		ELSE
+			JS #MOIN
+		ENDIF
+	ELSE
+        IF (merin=2)
+            IF ((@IN[1]=0)
+                OB1, 1
+                merin=0
+            ELSE
+                JS #STAHP
+            ENDIF
+        ELSE
+            JS #HOME
+        ENDIF
+	ENDIF
+
+	JS#SETOP
+ENDIF
+WT1000
+JP#LOOP
+EN
+
+#STAHP
+'MG "Stop"
+#Q
+IF (merin <> 2)
+    JS #LOOP
+ENDIF
+JP#Q, _LRX = 0, _LFX = 0
+MO
+merstat=3
+'MG "Stopped"
+EN
+
+#HOME
+'MG "move out"
+merstat=2
+SH
+DCX=decel
+JGX=-1*merspeec
+BGX
+#L
+IF (merin <> 0)
+	STX
+	AMX
+	JS #LOOP
+ENDIF
+JP#L, _LRX = 1
+STX
+AMX
+#HOME2
+DCX=67107840
+JGX=500
+BGX
+#M
+IF (merin <> 0)
+	DCX=decel
+	STX
+	AMX
+	JS #LOOP
+ENDIF
+JP#M, _LRX = 0
+STX
+AMX
+DP0
+MO
+merstat=0
+MG "Homed"
+EN
+
+#MOIN
+'MG "move in"
+merstat=2
+SH
+DCX=decel
+JGX=merspeed
+BGX
+#N
+IF (merin <> 1)
+	STX
+	AMX
+	JS #LOOP
+ENDIF
+JP#N, _LFX = 1
+STX
+AMX
+DCX=67107840
+JGX=-500
+BGX
+#O
+IF (merin <> 1)
+	DCX=decel
+	STX
+	AMX
+	JS #LOOP
+ENDIF
+JP#O, _LFX = 0
+STX
+AMX
+PR -1*@ABS[meroff]
+BGX
+AMX
+MO
+merstat=1
+MG "Moved"
+EN
+
+#STOP
+'MG "stop"
+merstat = 3
+
+#ININT
+'MG "Int"
+WT10
+JS#SETOP
+
+IF @IN[1]=1
+	trigger=0
+ELSE
+	trigger=1
+ENDIF
+ZS
+II1,,,trigger
+IF ((merin=0)&(merstat=2))
+	JS#HOME
+	lmerin=0
+	JS#SETOP
+ENDIF
+JP#LOOP
+EN
+RI0
+
+#PNEU
+JS#SETOP
+IF @IN[1]=1
+	trigger=0
+ELSE
+	trigger=1
+ENDIF
+II1,,,trigger
+EN
+
+#SETOP
+IF ((@IN[1]=0)&(_RPA>10))
+	OB1, 1
+	IF (merin=1)
+		STX
+		AMX
+		merin=0
+	ENDIF
+ELSE
+	IF ((merin=0)&(merstat=2))
+		WT2000
+	ENDIF
+	OB1, 0
+ENDIF
+EN
