@@ -130,7 +130,7 @@ class ContainerGrid(FloatLayout):
             self.requested_position = str(self.settings["max_position"])
 
         if int(self.rp) >= int(self.requested_position) and self.inserted == 0:
-            self.ml_interface.stop()
+            #self.ml_interface.stop()
             self.inserted = 1
 
         if self.requested_state is 'Stopped':
