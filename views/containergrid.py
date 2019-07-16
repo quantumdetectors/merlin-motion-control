@@ -57,6 +57,7 @@ class ContainerGrid(FloatLayout):
         self.requested_position = str(
             self.settings["default_requested_position"]
         )
+        self.set_requested_position()
         self.title = self.ml_interface.software_title
         self.settingsWindow = SettingsWindow(ml_object=self.ml_interface)
         self.infoWindow = InfoWindow(ml_object=self.ml_interface)
