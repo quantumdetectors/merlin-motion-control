@@ -20,6 +20,10 @@ IF (_LRX=0)
 	JS#HOME2
 ENDIF
 
+IF (merin=2)
+	JS#STP
+ENDIF
+
 JS#HOME
 JS#PNEU
 
@@ -112,14 +116,20 @@ EN
 
 #MOIN
 'MG "move in"
-merstat=2
+merstat=1
 SH
 DCX=decel
 JGX=merspeed
+PR req_pos
 BGX
-MF req_pos
+'MF req_pos
+#A
+IF (merin <> 1)
+	STX
+	AMX
+	JS #LOOP
 ENDIF
-STX
+JP#A, _BGX = 1
 AMX
 merstat=1
 'MG "Moved"
