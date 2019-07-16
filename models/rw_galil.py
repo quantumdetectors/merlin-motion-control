@@ -32,7 +32,6 @@ class Thread_A(threading.Thread):
             c.acquire()
             is_connected = chk_ml._connected
             c.release()
-            print(ip_address, 'is_connected=',str(is_connected))
 
 
 class MotionLinkInterface():
