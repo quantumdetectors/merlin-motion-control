@@ -14,3 +14,4 @@ class StatusFields(GridLayout):
         """
 
         super(StatusFields, self).__init__(**kwargs)
+        #self.ids['conn_stat'].background_color=(1,0,0,1)

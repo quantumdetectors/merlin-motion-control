@@ -1,3 +1,4 @@
+""" """
 from kivy.clock import Clock, mainthread
 from models.galil import MotionLink
 from functools import partial
@@ -7,7 +8,7 @@ import time
 c = threading.Condition()
 is_connected = False
 ip_address = '0.0.0.0'
-CLOCK_SPEED = 0.00001
+CLOCK_SPEED = 0.000001
 
 
 class Thread_A(threading.Thread):
@@ -45,6 +46,7 @@ class MotionLinkInterface():
     debug = False
     software_version = '0'
     software_title = '0'
+    requested_position = '0'
     global is_connected
     global ip_address
 
@@ -74,6 +76,9 @@ class MotionLinkInterface():
             self.rp = self.ml.read_rp()
             self.gatan_in = self.ml.get_gatan_in()
             self.gatan_veto = self.ml.get_gatan_veto()
+
+    def set_requested_position(self):
+        self.ml.set_requested_position(self.requested_position)
 
     def update_ml(self):
         global ip_address

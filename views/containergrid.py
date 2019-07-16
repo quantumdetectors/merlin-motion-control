@@ -15,7 +15,7 @@ from views.labels import Labels
 from models.rw_galil import MotionLinkInterface
 import threading
 import time
-CLOCK_SPEED = 0.00001
+CLOCK_SPEED = 0.000001
 
 
 class ContainerGrid(FloatLayout):
@@ -23,8 +23,6 @@ class ContainerGrid(FloatLayout):
 
     rp = StringProperty('0')
     _rp = StringProperty('Default')
-    block_movement = BooleanProperty(False)
-    movement_blocked = StringProperty('Default')
     requested_position = StringProperty('0')
     current_state = StringProperty('Default')
     requested_state = StringProperty('Default')
@@ -34,6 +32,8 @@ class ContainerGrid(FloatLayout):
     gatan_veto_msg = StringProperty('Default')
     _is_connected = BooleanProperty('False')
     connection_status = StringProperty('Disconnected')
+    interlocked = 0
+    inserted = 0
 
     def __init__(self, settings, **kwargs):
         """Initialize layout.
@@ -66,10 +66,11 @@ class ContainerGrid(FloatLayout):
 
     def move_in(self):
         """Call move in function on the MotionLink object."""
-        if self.current_state is not 'Stopped':
+        if self.inserted == 0:
+        #if self.current_state is not 'Stopped':
+            self.ml_interface.move(1)
             self.requested_state = 'Inserted'
-            if not self.block_movement:
-                self.ml_interface.move(1)
+
 
     def move_out(self):
         """Call move in function on the MotionLink object."""
@@ -81,7 +82,9 @@ class ContainerGrid(FloatLayout):
         self.requested_state = 'Stopped'
         self.ml_interface.stop()
 
-
+    def set_requested_position(self):
+        self.ml_interface.requested_position = self.requested_position
+        self.ml_interface.set_requested_position()
 
     def update_status_fields(self, *args):
         """Call read_rp on the MotionLink object and update status fields.
@@ -124,13 +127,9 @@ class ContainerGrid(FloatLayout):
         if int(self.requested_position) > self.settings["max_position"]:
             self.requested_position = str(self.settings["max_position"])
 
-        if not self.block_movement and int(self.rp) > \
-                int(self.requested_position):
+        if int(self.rp) >= int(self.requested_position) and self.inserted == 0:
             self.ml_interface.stop()
-            self.block_movement = True
-        elif self.block_movement and int(self.rp) < \
-                int(self.requested_position):
-            self.block_movement = False
+            self.inserted = 1
 
         if self.requested_state is 'Stopped':
             self.current_state = self.requested_state
@@ -143,28 +142,16 @@ class ContainerGrid(FloatLayout):
             self.current_state = 'Moving'
         elif self.rp is self._rp and int(self.rp) == 0:
             self.current_state = 'Retracted'
+            self.inserted = 0
 
-        if self.block_movement:
-            self.movement_blocked = 'Yes'
-        else:
-            self.movement_blocked = 'No'
 
-        if not self._is_connected:
-            self.connection_status = 'Disconnected'
-        elif self._is_connected:
-            self.connection_status = 'Connection established'
-
-        if self.ml_interface.gatan_in:
-            self.gatan_in_msg = 'Yes'
-        else:
-            self.gatan_in_msg = 'No'
-        if self.ml_interface.gatan_veto:
-            self.gatan_veto_msg = 'Yes'
-        else:
-            self.gatan_veto_msg = 'No'
+        self.connection_status = 'Connection established' if self.ml_interface.is_connected else 'Disconnected'
+        self.gatan_in_msg = 'Yes' if self.ml_interface.gatan_in else 'No'
+        self.gatan_veto_msg = 'Yes' if self.ml_interface.gatan_veto else 'No'
 
         # Called last
         self._rp = self.rp
+        #self.rp = str(int(float(self.rp)/3200)) # In units of mm
 
     def settingswindow(self):
         """Open Settings window."""

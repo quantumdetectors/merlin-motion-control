@@ -13,13 +13,12 @@ lmerin=0
 merstat=0
 meroff=0
 decel=2000000
+req_pos=0
 
 IF (_LRX=0)
 	MG "Moving off limit"
 	JS#HOME2
 ENDIF
-
-
 
 JS#HOME
 JS#PNEU
@@ -43,16 +42,17 @@ IF (merin <> lmerin)
 			JS #STP
 		ENDIF
 	ELSE
-        IF (merin=1)
-            IF ((@IN[1]=0)
-                OB1, 1
-                merin=0
-            ELSE
-                JS #MOIN
-            ENDIF
-        ELSE
-            JS #HOME
-        ENDIF
+		IF (merin=1)
+			merconn=0
+			IF ((@IN[1]=0)
+				OB1, 1
+				merin=0
+			ELSE
+				JS #MOIN
+			ENDIF
+		ELSE
+			JS #HOME
+		ENDIF
 	ENDIF
 
 	JS#SETOP
@@ -60,6 +60,7 @@ ENDIF
 WT1000
 JP#LOOP
 EN
+
 
 #STP
 'MG "Stop"
@@ -69,7 +70,7 @@ IF (merin <> 2)
 ENDIF
 JP#Q, _LRX = 0, _LFX = 0
 MO
-merstat=3
+merstat=1
 'MG "Stopped"
 EN
 
@@ -116,39 +117,14 @@ SH
 DCX=decel
 JGX=merspeed
 BGX
-#N
-IF (merin <> 1)
-	STX
-	AMX
-	JS #LOOP
+MF req_pos
 ENDIF
-JP#N, _LFX = 1
 STX
 AMX
-DCX=67107840
-JGX=-500
-BGX
-#O
-IF (merin <> 1)
-	DCX=decel
-	STX
-	AMX
-	JS #LOOP
-ENDIF
-JP#O, _LFX = 0
-STX
-AMX
-PR -1*@ABS[meroff]
-BGX
-AMX
-MO
 merstat=1
-MG "Moved"
+'MG "Moved"
+MO
 EN
-
-#STOP
-'MG "stop"
-merstat = 3
 
 #ININT
 'MG "Int"
@@ -188,6 +164,12 @@ IF ((@IN[1]=0)&(_RPA>10))
 		STX
 		AMX
 		merin=0
+	ELSE
+		IF (merin=2)
+			STX
+			AMX
+			merin=0
+		ENDIF
 	ENDIF
 ELSE
 	IF ((merin=0)&(merstat=2))

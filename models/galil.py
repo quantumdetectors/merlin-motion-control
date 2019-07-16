@@ -88,18 +88,25 @@ class MotionLink():
                 else:
                     self.merspeec = cmd[1]
                     print(command)
+            elif command.split('=')[0] == 'req_pos':
+                print('Request position set to', command.split('=')[1] )
+
 
     def move(self, cmd):
         val = self._execute('merin={}'.format(cmd))
         return val
 
     def stop(self):
-        #val = self._execute('DCX=100000;STX;merstat=3')
+        #val = self._execute('STX;MO;merstat=3;')
         val = self._execute('merin=2')
         return val
 
     def read_rp(self):
         val = self._execute('RP')
+        return val
+
+    def set_requested_position(self,cmd):
+        val = self._execute('req_pos={}'.format(cmd))
         return val
 
     def get_gatan_in(self):

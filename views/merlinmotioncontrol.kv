@@ -87,7 +87,7 @@
     spacing: 10
     padding: 0
     CustomLabel:
-        text: "Movement Blocked"
+        text: "Connection Status"
     CustomLabel:
         text: "Requested State"
     CustomLabel:
@@ -107,7 +107,9 @@
     spacing: 10
     padding: 0
     CustomLabel:
-        text: root.parent.parent.movement_blocked
+        id: conn_stat
+        text: root.parent.parent.connection_status
+        #background_color = root.parent.parent.
     CustomLabel:
         text: root.parent.parent.requested_state
     CustomLabel:
@@ -125,6 +127,8 @@
         text: root.parent.parent.requested_position
         on_text:
             root.parent.parent.requested_position=self.text
+        on_text_validate:
+            root.parent.parent.set_requested_position()
     CustomLabel:
         text: root.parent.parent.rp
 
