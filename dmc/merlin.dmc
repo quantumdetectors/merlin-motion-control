@@ -116,7 +116,7 @@ merstat=2
 SH
 DCX=decel
 JGX=merspeed
-PR req_pos
+PA req_pos
 BGX
 'MF req_pos
 #A
