@@ -78,16 +78,21 @@ class ContainerGrid(FloatLayout):
         self.ml_interface.mer_ip_address = self.settings["ip_address"]
         self.ml_interface.speed = self.settings["speed"]
         self.ml_interface.speed_out = self.settings["speed_out"]
-        self.ml_interface.standby_position = self.settings["standby_position"]
+        self.standby_position = str(
+            self.settings["standby_position"]
+        )
         self.requested_position = str(
             self.settings["default_requested_position"]
         )
+        self.ml_interface.standby_position = self.standby_position
+        self.ml_interface.requested_position = self.requested_position
         self.title = self.ml_interface.software_title
         self.settingsWindow = SettingsWindow(ml_object=self.ml_interface)
         self.infoWindow = InfoWindow(ml_object=self.ml_interface)
         self.ml_interface.update_ml()
         self.ml_interface.write()
         self.set_requested_position()
+        self.set_standby_position()
 
     def standby(self):
         """Call move to standby."""

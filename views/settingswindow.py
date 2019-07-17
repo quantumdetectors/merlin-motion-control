@@ -16,6 +16,7 @@ class SettingsWindow(ModalView):
     speed = StringProperty('Def')
     speed_out = StringProperty('Def')
     standby_position = StringProperty('Def')
+    requested_position = StringProperty('Def')
 
     def __init__(self, ml_object, **kwargs):
         """Initialize Settings modal window of main interface.
@@ -44,9 +45,11 @@ class SettingsWindow(ModalView):
         self.ml.speed = self.speed
         self.ml.speed_out = self.speed_out
         self.ml.standby_position = self.standby_position
+        self.ml.requested_position = self.requested_position
         self.ml.update_ml()
         self.ml.write()
         self.ip_address = self.ml.mer_ip_address
         self.speed = str(self.ml.speed)
         self.speed_out = str(self.ml.speed_out)
         self.standby_position = str(self.ml.standby_position)
+        self.requested_position = str(self.ml.requested_position)

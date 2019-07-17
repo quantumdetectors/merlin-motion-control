@@ -196,9 +196,9 @@
 
 <SettingsWindow>:
     size_hint: (None, None)
-    size: (400, 400)
+    size: (400, 440)
     FloatLayout:
-        size: (400, 400)
+        size: (400, 440)
         CustomLabel:
             size_hint: (1, .15)
             pos_hint: {'x':.0, 'y':.85}
@@ -206,7 +206,7 @@
         GridLayout:
             size_hint: (1, .7)
             pos_hint: {'x':.0, 'y':.16}
-            rows: 8
+            rows: 10
             cols: 2
             spacing: 10
             padding: 0
@@ -241,6 +241,17 @@
                 on_text:
                     root.speed_out=self.text
             CustomLabel:
+                text: "Requested Position"
+            ModalTextInput:
+                id: req_pos
+                focus: False
+                on_focus:
+                    self.border_color=(.5,.5,.5,1)
+                    self.cursor=(0,0)
+                text: root.requested_position
+                on_text:
+                    root.requested_position=self.text
+            CustomLabel:
                 text: "Standby Position"
             ModalTextInput:
                 focus: False
@@ -250,6 +261,7 @@
                 text: root.standby_position
                 on_text:
                     root.standby_position=self.text
+
 
         ModalButton:
             size_hint: (.4, .15)

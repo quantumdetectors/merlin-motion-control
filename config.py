@@ -64,6 +64,17 @@ def default_requested_position():
         verified_input = 1
     return verified_input
 
+def standby_position():
+    key = 'STANDBY_POSITION'
+    user_input = int(os.environ.get(key, None))
+    try:
+        verify_env.import_check({key:user_input})
+        verified_input = user_input
+    except TypeError as e:
+        print(e.__class__, "".join(e.args))
+        verified_input = 1
+    return verified_input
+
 def default_speed():
     key = 'SPEED'
     user_input = int(os.environ.get(key, None))
@@ -122,6 +133,7 @@ def load_user_settings():
         json.dump(settings, json_file, indent=2)
 
     settings["max_position"] = max_position()
+    settings["standby_position"] = standby_position()
     settings["software_version"] = software_version()
     settings["title"] = "Merlin Motion Control"
     return settings
