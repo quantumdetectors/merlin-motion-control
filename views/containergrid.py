@@ -38,6 +38,8 @@ class ContainerGrid(FloatLayout):
     interlocked = 0
     inserted = 0
 
+    def disable_window(self):
+        return True if self.connection_status == 'Disconnected' else False
     def disable_move_in(self):
         state = int(float(self.ml_interface.current_state))
         return False if state == 3 else (True if state == 2 else (True if state == 1 else False))
@@ -48,6 +50,7 @@ class ContainerGrid(FloatLayout):
         state = int(float(self.ml_interface.current_state))
         return True if state == 3 else (False if state == 2 else (True if state == 1 else True))
 
+    window_disabled = AliasProperty(disable_window, bind=['connection_status'])
     button_move_in_disabled = AliasProperty(disable_move_in, bind=['current_state'])
     button_move_out_disabled = AliasProperty(disable_move_out, bind=['current_state'])
     button_stop_disabled = AliasProperty(disable_stop, bind=['current_state'])
@@ -134,6 +137,7 @@ class ContainerGrid(FloatLayout):
                         'No' if False.
 
         """
+        self.connection_status = 'Connection established' if self.ml_interface.is_connected else 'Disconnected'
         self.rp = self.ml_interface.rp
 
         if self.requested_position is '':
@@ -147,21 +151,11 @@ class ContainerGrid(FloatLayout):
 
         state = int(float(self.ml_interface.current_state))
         self.current_state = 'Stopped'if state == 3 else ('Moving' if state == 2 else ('Inserted' if state == 1 else 'Retracted'))
-        self.connection_status = 'Connection established' if self.ml_interface.is_connected else 'Disconnected'
         self.gatan_in_msg = 'Yes' if self.ml_interface.gatan_in else 'No'
         self.gatan_veto_msg = 'Yes' if self.ml_interface.gatan_veto else 'No'
 
         # Called last
         self._rp = self.rp
-        #self.rp = str(int(float(self.rp)/3200)) # In units of mm
-
-
-
-    #disable_move_out = True
-    #disable_stop = True
-
-    #button_move_out_disabled = AliasProperty(disable_move_out, None, bind=['disable_move_out'], cache=True)
-    #button_stop_disabled = AliasProperty(disable_stop, None, bind=['disable_stop'], cache=True)
 
     def settingswindow(self):
         """Open Settings window."""
