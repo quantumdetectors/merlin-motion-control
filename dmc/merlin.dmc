@@ -14,6 +14,7 @@ merstat=0
 meroff=0
 decel=2000000
 req_pos=0
+stdbypos=0
 
 IF (_LRX=0)
 	MG "Moving off limit"
@@ -34,24 +35,32 @@ IF (merin <> lmerin)
 	lmerin=merin
 	'MG "Mer changed"
 	'MG merin
-	IF (merin=2)
+	IF (merin=1)
 		IF ((@IN[1]=0)
 			OB1, 1
 			merin=0
 		ELSE
-			JS #STP
+			JS #MOIN
 		ENDIF
 	ELSE
-		IF (merin=1)
-			merconn=0
+		IF (merin=2)
 			IF ((@IN[1]=0)
 				OB1, 1
 				merin=0
 			ELSE
-				JS #MOIN
+				JS #STP
 			ENDIF
 		ELSE
-			JS #HOME
+			IF (merin=3)
+				IF ((@IN[1]=0)
+					OB1, 1
+					merin=0
+				ELSE
+					JS #STDBY
+				ENDIF
+			ELSE
+				JS #HOME
+			ENDIF
 		ENDIF
 	ENDIF
 
@@ -132,6 +141,27 @@ merstat=1
 MO
 EN
 
+#STDBY
+'MG "Going to standby"
+merstat=2
+SH
+DCX=decel
+JGX=merspeed
+PA stdbypos
+BGX
+#AA
+IF (merin <> 3)
+	STX
+	AMX
+	JS #LOOP
+ENDIF
+JP#AA, _BGX = 1
+AMX
+merstat=4
+'MG "In Standby"
+MO
+EN
+
 #ININT
 'MG "Int"
 WT10
@@ -175,6 +205,12 @@ IF ((@IN[1]=0)&(_RPA>10))
 			STX
 			AMX
 			merin=0
+		ELSE
+			IF (merin=3)
+				STX
+				AMX
+				merin=0
+			ENDIF
 		ENDIF
 	ENDIF
 ELSE

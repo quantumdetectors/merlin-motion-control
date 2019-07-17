@@ -40,6 +40,7 @@ class MotionLinkInterface():
     software_version = '0'
     software_title = '0'
     requested_position = '0'
+    standby_position = '0'
     current_state = '0'
     global g_is_connected
     global ip_address
@@ -65,6 +66,7 @@ class MotionLinkInterface():
         self.is_connected = g_is_connected
         if self.is_connected:
             self.set_requested_position()
+            self.set_standby_position()
         self._is_connected = self.is_connected
 
     def thread_function(self):
@@ -96,9 +98,17 @@ class MotionLinkInterface():
         self.ml.set_requested_position(self.requested_position)
 
     @with_connection
+    def set_standby_position(self):
+        self.ml.set_standby_position(self.standby_position)
+
+    @with_connection
     def move(self, arg):
         self.ml.move(arg)
 
     @with_connection
     def stop(self):
         self.ml.stop()
+
+    @with_connection
+    def standby(self):
+        self.ml.standby()

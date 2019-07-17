@@ -41,17 +41,21 @@ class ContainerGrid(FloatLayout):
 
     def disable_window(self):
         return True if self.connection_status == 'Disconnected' else False
+    def disable_standby(self):
+        state = int(float(self.ml_interface.current_state))
+        return True if state == 4 else False
     def disable_move_in(self):
         state = int(float(self.ml_interface.current_state))
-        return False if state == 3 else (True if state == 2 else (True if state == 1 else False))
+        return  True if state == 1 else False
     def disable_move_out(self):
         state = int(float(self.ml_interface.current_state))
-        return False if state == 3 else (True if state == 2 else (False if state == 1 else True))
+        return True if state == 0 else False
     def disable_stop(self):
         state = int(float(self.ml_interface.current_state))
-        return True if state == 3 else (False if state == 2 else (True if state == 1 else True))
+        return False if state == 2 else True
 
     window_disabled = AliasProperty(disable_window, bind=['connection_status'])
+    button_standby_disabled = AliasProperty(disable_standby, bind=['current_state'])
     button_move_in_disabled = AliasProperty(disable_move_in, bind=['current_state'])
     button_move_out_disabled = AliasProperty(disable_move_out, bind=['current_state'])
     button_stop_disabled = AliasProperty(disable_stop, bind=['current_state'])
@@ -74,6 +78,7 @@ class ContainerGrid(FloatLayout):
         self.ml_interface.mer_ip_address = self.settings["ip_address"]
         self.ml_interface.speed = self.settings["speed"]
         self.ml_interface.speed_out = self.settings["speed_out"]
+        self.ml_interface.standby_position = self.settings["standby_position"]
         self.requested_position = str(
             self.settings["default_requested_position"]
         )
@@ -84,18 +89,15 @@ class ContainerGrid(FloatLayout):
         self.ml_interface.write()
         self.set_requested_position()
 
-
     def standby(self):
         """Call move to standby."""
-        self.ml_interface.requested_position = self.standby_position
-        self.ml_interface.move(1)
+        print('Containergrid',self.standby_position)
+        print('ML',self.ml_interface.standby_position)
+        self.ml_interface.standby()
         self.requested_state = 'Standby'
-        self.ml_interface.requested_position = self.requested_position
 
     def move_in(self):
         """Call move in function on the MotionLink object."""
-        #if self.inserted == 0:
-        #if self.current_state is not 'Stopped':
         self.ml_interface.move(1)
         self.requested_state = 'Inserted'
 
@@ -112,6 +114,10 @@ class ContainerGrid(FloatLayout):
     def set_requested_position(self):
         self.ml_interface.requested_position = self.requested_position
         self.ml_interface.set_requested_position()
+
+    def set_standby_position(self):
+        self.ml_interface.standby_position = self.standby_position
+        self.ml_interface.set_standby_position()
 
     def update_status_fields(self, *args):
         """Call read_rp on the MotionLink object and update status fields.
@@ -159,8 +165,7 @@ class ContainerGrid(FloatLayout):
             self.inserted = 1
 
         state = int(float(self.ml_interface.current_state))
-        self.current_state = 'Stopped'if state == 3 else ('Moving' if state == 2 else ('Inserted' if state == 1 else 'Retracted'))
-        self.current_state = 'Standby' if int(self.rp) == self.standby_position else self.current_state
+        self.current_state = 'Standby' if state == 4 else ('Stopped'if state == 3 else ('Moving' if state == 2 else ('Inserted' if state == 1 else 'Retracted')))
         self.gatan_in_msg = 'Yes' if self.ml_interface.gatan_in else 'No'
         self.gatan_veto_msg = 'Yes' if self.ml_interface.gatan_veto else 'No'
 

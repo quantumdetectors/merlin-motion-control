@@ -31,6 +31,13 @@ def import_check(settings):
             raise TypeError("DEFAULT_REQUESTED_POSITION needs to be stated in the .env file \
                 as a positive integer on the form: DEFAULT_REQUESTED_POSITION=50000")
 
+        key = "STANDBY_POSITION"
+        if key in settings and\
+          (not isinstance(settings["STANDBY_POSITION"], int) or\
+          not settings["STANDBY_POSITION"] > 0):
+            raise TypeError("STANDBY_POSITION needs to be stated in the .env file \
+                as a positive integer on the form: STANDBY_POSITION=120000")
+
         key = "SPEED"
         if key in settings and\
           (not isinstance(settings["SPEED"], int) or\

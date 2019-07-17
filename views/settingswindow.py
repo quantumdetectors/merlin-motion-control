@@ -15,6 +15,7 @@ class SettingsWindow(ModalView):
     ip_address = StringProperty('Def')
     speed = StringProperty('Def')
     speed_out = StringProperty('Def')
+    standby_position = StringProperty('Def')
 
     def __init__(self, ml_object, **kwargs):
         """Initialize Settings modal window of main interface.
@@ -30,6 +31,8 @@ class SettingsWindow(ModalView):
         self.speed = str(ml_object.speed)
         self.speed_out = str(ml_object.speed_out)
         self.ml = ml_object
+        self.standby_position = str(ml_object.standby_position)
+        self.requested_position = str(ml_object.requested_position)
 
     def set_values(self):
         """Update values of MotionLink object when called.
@@ -40,8 +43,10 @@ class SettingsWindow(ModalView):
         self.ml.mer_ip_address = self.ip_address
         self.ml.speed = self.speed
         self.ml.speed_out = self.speed_out
+        self.ml.standby_position = self.standby_position
         self.ml.update_ml()
         self.ml.write()
         self.ip_address = self.ml.mer_ip_address
         self.speed = str(self.ml.speed)
         self.speed_out = str(self.ml.speed_out)
+        self.standby_position = str(self.ml.standby_position)

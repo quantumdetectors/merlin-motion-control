@@ -102,6 +102,10 @@ class MotionLink():
         val = self._execute('merin=2')
         return val
 
+    def standby(self):
+        val = self._execute('merin=3')
+        return val
+
     def read_rp(self):
         val = self._execute('RP')
         return val
@@ -112,6 +116,10 @@ class MotionLink():
 
     def set_requested_position(self,cmd):
         val = self._execute('req_pos={}'.format(cmd))
+        return val
+
+    def set_standby_position(self,cmd):
+        val = self._execute('stdbypos={}'.format(cmd))
         return val
 
     def get_gatan_in(self):

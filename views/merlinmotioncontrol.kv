@@ -70,7 +70,7 @@
                 text: "Standby"
                 size_hint_x: None
                 width: 200
-                disabled: root.parent.parent.button_move_in_disabled
+                disabled: root.parent.parent.button_standby_disabled
                 on_press: root.parent.parent.standby()
     FloatLayout:
         size_hint: (1, .65)
@@ -196,9 +196,9 @@
 
 <SettingsWindow>:
     size_hint: (None, None)
-    size: (400, 300)
+    size: (400, 400)
     FloatLayout:
-        size: (400, 300)
+        size: (400, 400)
         CustomLabel:
             size_hint: (1, .15)
             pos_hint: {'x':.0, 'y':.85}
@@ -206,7 +206,7 @@
         GridLayout:
             size_hint: (1, .7)
             pos_hint: {'x':.0, 'y':.16}
-            rows: 7
+            rows: 8
             cols: 2
             spacing: 10
             padding: 0
@@ -240,6 +240,16 @@
                 text: root.speed_out
                 on_text:
                     root.speed_out=self.text
+            CustomLabel:
+                text: "Standby Position"
+            ModalTextInput:
+                focus: False
+                on_focus:
+                    self.border_color=(.5,.5,.5,1)
+                    self.cursor=(0,0)
+                text: root.standby_position
+                on_text:
+                    root.standby_position=self.text
 
         ModalButton:
             size_hint: (.4, .15)
