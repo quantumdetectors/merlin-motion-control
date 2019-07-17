@@ -69,16 +69,19 @@
                 text: "Move in"
                 size_hint_x: None
                 width: 200
+                disabled: root.parent.parent.button_move_in_disabled
                 on_press: root.parent.parent.move_in()
             CustomButton:
                 text: "Move out"
                 size_hint_x: None
                 width: 200
+                disabled: root.parent.parent.button_move_out_disabled
                 on_press: root.parent.parent.move_out()
             CustomButton:
                 text: "Stop"
                 size_hint_x: None
                 width: 200
+                disabled: root.parent.parent.button_stop_disabled
                 on_press: root.parent.parent.stop()
 
 <Labels>:

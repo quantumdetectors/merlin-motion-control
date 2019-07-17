@@ -4,34 +4,28 @@ from models.galil import MotionLink
 from functools import partial
 import threading
 import time
+from tests.ping import ping
 
-c = threading.Condition()
 is_connected = False
 ip_address = '0.0.0.0'
-CLOCK_SPEED = 0.000001
+CLOCK_SPEED = 0.00001
 
 
 class Thread_A(threading.Thread):
+
         def __init__(self, name):
             threading.Thread.__init__(self)
             self.name = name
 
         def run(self):
-            ml = MotionLink()
-            global is_connected
             global ip_address
-            Clock.schedule_interval(partial(self.attempt_connection, ml), CLOCK_SPEED)
+            Clock.schedule_interval(self.attempt_connection, CLOCK_SPEED)
 
         def attempt_connection(self,chk_ml,*args):
             global is_connected
             global ip_address
-            c.acquire()
-            chk_ml.mer_ip_address = ip_address
-            c.release()
-            chk_ml.connect()
-            c.acquire()
-            is_connected = chk_ml._connected
-            c.release()
+            is_connected = ping(ip_address)
+
 
 
 class MotionLinkInterface():
@@ -46,6 +40,7 @@ class MotionLinkInterface():
     software_version = '0'
     software_title = '0'
     requested_position = '0'
+    current_state = '0'
     global is_connected
     global ip_address
 
@@ -56,6 +51,7 @@ class MotionLinkInterface():
         self.threadA.start()
         self.ml = MotionLink()
         self.is_connected = is_connected
+        self._is_connected = False
 
     def with_connection(fn):
         def wrapper(self,*args,**kwargs):
@@ -63,21 +59,23 @@ class MotionLinkInterface():
                 return fn(self, *args, **kwargs)
         return wrapper
 
+    @mainthread
     def poll_connection_status(self, *args):
         global is_connected
         self.is_connected = is_connected
+        if self.is_connected:
+            self.set_requested_position()
+        self._is_connected = self.is_connected
 
     def thread_function(self):
-        Clock.schedule_interval(self.read, 10*CLOCK_SPEED)
+        Clock.schedule_interval(self.read, 100*CLOCK_SPEED)
 
     def read(self, *args):
         if self.is_connected:
             self.rp = self.ml.read_rp()
             self.gatan_in = self.ml.get_gatan_in()
             self.gatan_veto = self.ml.get_gatan_veto()
-
-    def set_requested_position(self):
-        self.ml.set_requested_position(self.requested_position)
+            self.current_state = self.ml.read_merstat()
 
     def update_ml(self):
         global ip_address
@@ -92,6 +90,10 @@ class MotionLinkInterface():
     @with_connection
     def write(self):
         self.ml.set_values()
+
+    @with_connection
+    def set_requested_position(self):
+        self.ml.set_requested_position(self.requested_position)
 
     @with_connection
     def move(self, arg):

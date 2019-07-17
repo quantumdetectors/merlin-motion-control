@@ -4,7 +4,7 @@ Bind button functionality between interface and MotionLink options.
 Update status fields.
 """
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import StringProperty, BooleanProperty, ListProperty
+from kivy.properties import StringProperty, BooleanProperty, ListProperty, AliasProperty, NumericProperty
 from kivy.uix.label import Label
 from kivy.clock import Clock, mainthread
 from views.settingswindow import SettingsWindow
@@ -15,6 +15,7 @@ from views.labels import Labels
 from models.rw_galil import MotionLinkInterface
 import threading
 import time
+import os
 CLOCK_SPEED = 0.000001
 
 
@@ -32,8 +33,24 @@ class ContainerGrid(FloatLayout):
     gatan_veto_msg = StringProperty('Default')
     _is_connected = BooleanProperty('False')
     connection_status = StringProperty('Disconnected')
+    state = NumericProperty(0)
+    ml_interface = MotionLinkInterface()
     interlocked = 0
     inserted = 0
+
+    def disable_move_in(self):
+        state = int(float(self.ml_interface.current_state))
+        return False if state == 3 else (True if state == 2 else (True if state == 1 else False))
+    def disable_move_out(self):
+        state = int(float(self.ml_interface.current_state))
+        return False if state == 3 else (True if state == 2 else (False if state == 1 else True))
+    def disable_stop(self):
+        state = int(float(self.ml_interface.current_state))
+        return True if state == 3 else (False if state == 2 else (True if state == 1 else True))
+
+    button_move_in_disabled = AliasProperty(disable_move_in, bind=['current_state'])
+    button_move_out_disabled = AliasProperty(disable_move_out, bind=['current_state'])
+    button_stop_disabled = AliasProperty(disable_stop, bind=['current_state'])
 
     def __init__(self, settings, **kwargs):
         """Initialize layout.
@@ -47,7 +64,6 @@ class ContainerGrid(FloatLayout):
         super(ContainerGrid, self).__init__(**kwargs)
         Clock.schedule_interval(self.update_status_fields, CLOCK_SPEED)
         self.settings = settings
-        self.ml_interface = MotionLinkInterface()
         self.ml_interface.debug = False
         self.ml_interface.software_version = self.settings["software_version"]
         self.ml_interface.software_title = self.settings["title"]
@@ -57,7 +73,6 @@ class ContainerGrid(FloatLayout):
         self.requested_position = str(
             self.settings["default_requested_position"]
         )
-        print(self.requested_position)
         self.title = self.ml_interface.software_title
         self.settingsWindow = SettingsWindow(ml_object=self.ml_interface)
         self.infoWindow = InfoWindow(ml_object=self.ml_interface)
@@ -65,14 +80,12 @@ class ContainerGrid(FloatLayout):
         self.ml_interface.write()
         self.set_requested_position()
 
-
     def move_in(self):
         """Call move in function on the MotionLink object."""
-        if self.inserted == 0:
+        #if self.inserted == 0:
         #if self.current_state is not 'Stopped':
-            self.ml_interface.move(1)
-            self.requested_state = 'Inserted'
-
+        self.ml_interface.move(1)
+        self.requested_state = 'Inserted'
 
     def move_out(self):
         """Call move in function on the MotionLink object."""
@@ -130,23 +143,10 @@ class ContainerGrid(FloatLayout):
             self.requested_position = str(self.settings["max_position"])
 
         if int(self.rp) >= int(self.requested_position) and self.inserted == 0:
-            #self.ml_interface.stop()
             self.inserted = 1
 
-        if self.requested_state is 'Stopped':
-            self.current_state = self.requested_state
-        elif self.rp is self._rp and int(self.rp) >= \
-                self.settings["max_position"]:
-            self.current_state = 'Max Insertion'
-        elif self.rp is self._rp and int(self.rp) > 0:
-            self.current_state = 'Inserted'
-        elif self.rp is not self._rp:
-            self.current_state = 'Moving'
-        elif self.rp is self._rp and int(self.rp) == 0:
-            self.current_state = 'Retracted'
-            self.inserted = 0
-
-
+        state = int(float(self.ml_interface.current_state))
+        self.current_state = 'Stopped'if state == 3 else ('Moving' if state == 2 else ('Inserted' if state == 1 else 'Retracted'))
         self.connection_status = 'Connection established' if self.ml_interface.is_connected else 'Disconnected'
         self.gatan_in_msg = 'Yes' if self.ml_interface.gatan_in else 'No'
         self.gatan_veto_msg = 'Yes' if self.ml_interface.gatan_veto else 'No'
@@ -154,6 +154,14 @@ class ContainerGrid(FloatLayout):
         # Called last
         self._rp = self.rp
         #self.rp = str(int(float(self.rp)/3200)) # In units of mm
+
+
+
+    #disable_move_out = True
+    #disable_stop = True
+
+    #button_move_out_disabled = AliasProperty(disable_move_out, None, bind=['disable_move_out'], cache=True)
+    #button_stop_disabled = AliasProperty(disable_stop, None, bind=['disable_stop'], cache=True)
 
     def settingswindow(self):
         """Open Settings window."""
