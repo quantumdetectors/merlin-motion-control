@@ -54,14 +54,29 @@
 
 <ActionButtons>:
     id: buttons
-    rows: 1
+    rows: 2
     cols: 1
     spacing: 10
     padding: 10
     FloatLayout:
+        size_hint: (1, .35)
         BoxLayout:
             orientation: 'vertical'
-            size_hint: (1, .65)
+            spacing: 10
+            padding: 10
+            size_hint: (1, .5)
+            pos_hint: {'x':.0, 'y':.5}
+            CustomButton:
+                text: "Standby"
+                size_hint_x: None
+                width: 200
+                disabled: root.parent.parent.button_move_in_disabled
+                on_press: root.parent.parent.standby()
+    FloatLayout:
+        size_hint: (1, .65)
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: (1, 1)
             pos_hint: {'x':.0, 'y':.0}
             spacing: 10
             padding: 10

@@ -25,6 +25,7 @@ class ContainerGrid(FloatLayout):
     rp = StringProperty('0')
     _rp = StringProperty('Default')
     requested_position = StringProperty('0')
+    standby_position = StringProperty('0')
     current_state = StringProperty('Default')
     requested_state = StringProperty('Default')
     gatan_in = StringProperty('Default')
@@ -82,6 +83,14 @@ class ContainerGrid(FloatLayout):
         self.ml_interface.update_ml()
         self.ml_interface.write()
         self.set_requested_position()
+
+
+    def standby(self):
+        """Call move to standby."""
+        self.ml_interface.requested_position = self.standby_position
+        self.ml_interface.move(1)
+        self.requested_state = 'Standby'
+        self.ml_interface.requested_position = self.requested_position
 
     def move_in(self):
         """Call move in function on the MotionLink object."""
@@ -151,6 +160,7 @@ class ContainerGrid(FloatLayout):
 
         state = int(float(self.ml_interface.current_state))
         self.current_state = 'Stopped'if state == 3 else ('Moving' if state == 2 else ('Inserted' if state == 1 else 'Retracted'))
+        self.current_state = 'Standby' if int(self.rp) == self.standby_position else self.current_state
         self.gatan_in_msg = 'Yes' if self.ml_interface.gatan_in else 'No'
         self.gatan_veto_msg = 'Yes' if self.ml_interface.gatan_veto else 'No'
 
