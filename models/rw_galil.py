@@ -4,9 +4,9 @@ from models.galil import MotionLink
 from functools import partial
 import threading
 import time
-from tests.ping import ping
+from models.ping import ping
 
-is_connected = False
+g_is_connected = False
 ip_address = '0.0.0.0'
 CLOCK_SPEED = 0.00001
 
@@ -22,9 +22,9 @@ class Thread_A(threading.Thread):
             Clock.schedule_interval(self.attempt_connection, CLOCK_SPEED)
 
         def attempt_connection(self,chk_ml,*args):
-            global is_connected
+            global g_is_connected
             global ip_address
-            is_connected = ping(ip_address)
+            g_is_connected = ping(ip_address)
 
 
 
@@ -41,7 +41,7 @@ class MotionLinkInterface():
     software_title = '0'
     requested_position = '0'
     current_state = '0'
-    global is_connected
+    global g_is_connected
     global ip_address
 
     def __init__(self):
@@ -50,7 +50,7 @@ class MotionLinkInterface():
         self.threadA = Thread_A("Connection verification")
         self.threadA.start()
         self.ml = MotionLink()
-        self.is_connected = is_connected
+        self.is_connected = g_is_connected
         self._is_connected = False
 
     def with_connection(fn):
@@ -61,8 +61,8 @@ class MotionLinkInterface():
 
     @mainthread
     def poll_connection_status(self, *args):
-        global is_connected
-        self.is_connected = is_connected
+        global g_is_connected
+        self.is_connected = g_is_connected
         if self.is_connected:
             self.set_requested_position()
         self._is_connected = self.is_connected
