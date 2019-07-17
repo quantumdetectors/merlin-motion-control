@@ -136,17 +136,8 @@
         text: root.parent.parent.gatan_in_msg
     CustomLabel:
         text: root.parent.parent.gatan_veto_msg
-    CustomTextInput:
-        id: req_pos
-        focus: False
-        on_focus:
-            self.border_color=(.5,.5,.5,1)
-            self.cursor=(0,0)
+    CustomLabel:
         text: root.parent.parent.requested_position
-        on_text:
-            root.parent.parent.requested_position=self.text
-        on_text_validate:
-            root.parent.parent.set_requested_position()
     CustomLabel:
         text: root.parent.parent.rp
 

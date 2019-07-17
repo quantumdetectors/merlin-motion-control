@@ -43,10 +43,10 @@ class ContainerGrid(FloatLayout):
         return True if self.connection_status == 'Disconnected' else False
     def disable_standby(self):
         state = int(float(self.ml_interface.current_state))
-        return True if state == 4 else False
+        return True if state == 4 and self.requested_state != 'Default' else False
     def disable_move_in(self):
         state = int(float(self.ml_interface.current_state))
-        return  True if state == 1 else False
+        return  True if state == 1 and self.requested_state != 'Default' else False
     def disable_move_out(self):
         state = int(float(self.ml_interface.current_state))
         return True if state == 0 else False
@@ -158,6 +158,7 @@ class ContainerGrid(FloatLayout):
 
         """
         self.connection_status = 'Connection established' if self.ml_interface.is_connected else 'Disconnected'
+        self.requested_position = self.ml_interface.requested_position
         self.rp = self.ml_interface.rp
 
         if self.requested_position is '':
