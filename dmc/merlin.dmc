@@ -20,10 +20,6 @@ IF (_LRX=0)
 	JS#HOME2
 ENDIF
 
-IF (merin=2)
-	JS#STP
-ENDIF
-
 JS#HOME
 JS#PNEU
 
@@ -74,7 +70,7 @@ IF (merin <> 2)
 ENDIF
 JP#Q, _LRX = 0, _LFX = 0
 MO
-merstat=1
+merstat=3
 'MG "Stopped"
 EN
 
@@ -116,7 +112,7 @@ EN
 
 #MOIN
 'MG "move in"
-merstat=1
+merstat=2
 SH
 DCX=decel
 JGX=merspeed
