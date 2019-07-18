@@ -17,27 +17,23 @@ The Merlin Motion Control app is used in conjunction with Quantum Detector's ret
 In the main interface you have access to all the relevant status fields and buttons for safely controlling your retractable Merlin detector using the MotionPod from MotionLink.
 
 <div align="center">
-<figure>
 <img src="views/static/images/main_window.png" alt="alt text" width="450" height="100%">
-<figcaption>**Figure 1.** Main window with Standby, Move in, Move out and Stop control buttons; Info and Settings actionbar buttons; and fields displaying the current status of the MotionLink system.</figcaption>
-</figure>
 </div>
 
+The main window has control buttons for Standby, Move in, Move out and Stop commands; and fields displaying the current status of the MotionLink system. In the actionbar ther are buttons for Info and Settings.
 
 
 <div align="center">
-<figure>
 <img src="views/static/images/settings_modal.png" alt="alt text" width="450" height="100%">
-<figcaption>**Figure 2.** Settings window with advanced settings that can be adjusted and saved for the current session. On exit these settings are disregarded, and the default ones are loaded on relaunching the application.</figcaption>
-</figure>
 </div>
 
+Settings window with advanced settings that can be adjusted and saved for the current session. On exit these settings are disregarded, and the default ones are loaded on relaunching the application.
+
 <div align="center">
-<figure>
 <img src="views/static/images/info_modal.png" alt="alt text" width="450" height="100%">
-<figcaption>**Figure 3.** Info window with name of software, version and copyright notice.</figcaption>
-</figure>
 </div>
+
+Info window with name of software, version and copyright notice.
 
 ### Buttons
 - Move in: Moves the detector in. When it reaches the requested position a stop command is sent to the MotionLink unit. When the current state is 'Stopped', 'Move In' is interlocked to prevent accidentally moving the detector in further. The actual position it will reach is speed and clock frequency dependent, and slower speeds imply a higher degree of accuracy. At a speed of 20000 units per second, expect a 500-1000 difference in requested position and actual position. The clock speed is hard coded and is not accessible to the user. 3200 units equals 1 mm in lateral displacement of the Merlin.
