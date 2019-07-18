@@ -17,20 +17,26 @@ The Merlin Motion Control app is used in conjunction with Quantum Detector's ret
 In the main interface you have access to all the relevant status fields and buttons for safely controlling your retractable Merlin detector using the MotionPod from MotionLink.
 
 <div align="center">
+<figure>
 <img src="views/static/images/main_window.png" alt="alt text" width="450" height="100%">
 <figcaption>**Figure 1.** Main window with Standby, Move in, Move out and Stop control buttons; Info and Settings actionbar buttons; and fields displaying the current status of the MotionLink system.</figcaption>
+</figure>
 </div>
 
 
 
 <div align="center">
+<figure>
 <img src="views/static/images/settings_modal.png" alt="alt text" width="450" height="100%">
 <figcaption>**Figure 2.** Settings window with advanced settings that can be adjusted and saved for the current session. On exit these settings are disregarded, and the default ones are loaded on relaunching the application.</figcaption>
+</figure>
 </div>
 
 <div align="center">
+<figure>
 <img src="views/static/images/info_modal.png" alt="alt text" width="450" height="100%">
 <figcaption>**Figure 3.** Info window with name of software, version and copyright notice.</figcaption>
+</figure>
 </div>
 
 ### Buttons
