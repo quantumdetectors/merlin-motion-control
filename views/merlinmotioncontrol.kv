@@ -21,7 +21,7 @@
     background_color: .18, .18, .18, 1
 
 <ModalButton@Button>:
-    font_size: 18
+    font_size: 16
     color: 0,0,0,1
     background_normal: ''
     #background_color: .88, .88, .88, 1
@@ -191,8 +191,8 @@
     FloatLayout:
         size: (400, 440)
         CustomLabel:
-            size_hint: (1, .15)
-            pos_hint: {'x':.0, 'y':.85}
+            size_hint: (1, .11)
+            pos_hint: {'x':.0, 'y':.88}
             text: root.software_title + " v" + root.software_version
         GridLayout:
             size_hint: (1, .7)
@@ -253,9 +253,8 @@
                 on_text:
                     root.standby_position=self.text
 
-
         ModalButton:
-            size_hint: (.4, .15)
+            size_hint: (.39, .12)
             pos_hint: {'x':.3, 'y':0.08}
             text: "Update values"
             on_press: root.set_values()
