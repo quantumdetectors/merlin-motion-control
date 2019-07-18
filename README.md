@@ -18,19 +18,19 @@ In the main interface you have access to all the relevant status fields and butt
 
 <div align="center">
 <img src="views/static/images/main_window.png" alt="alt text" width="450" height="100%">
-**Figure 1.** Main window with Standby, Move in, Move out and Stop control buttons; Info and Settings actionbar buttons; and fields displaying the current status of the MotionLink system.
+<figcaption>**Figure 1.** Main window with Standby, Move in, Move out and Stop control buttons; Info and Settings actionbar buttons; and fields displaying the current status of the MotionLink system.</figcaption>
 </div>
 
 
 
 <div align="center">
 <img src="views/static/images/settings_modal.png" alt="alt text" width="450" height="100%">
-**Figure 2.** Settings window with advanced settings that can be adjusted and saved for the current session. On exit these settings are disregarded, and the default ones are loaded on relaunching the application.
+<figcaption>**Figure 2.** Settings window with advanced settings that can be adjusted and saved for the current session. On exit these settings are disregarded, and the default ones are loaded on relaunching the application.</figcaption>
 </div>
 
 <div align="center">
 <img src="views/static/images/info_modal.png" alt="alt text" width="450" height="100%">
-**Figure 3.** Info window with name of software, version and copyright notice.
+<figcaption>**Figure 3.** Info window with name of software, version and copyright notice.</figcaption>
 </div>
 
 ### Buttons
