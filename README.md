@@ -1,6 +1,6 @@
-#Merlin Motion Control
+# Merlin Motion Control
 
-Interlock and controller for MerlinEM DMC.
+This is a beta version of the Merlin Motion Control. Interlock and controller for MerlinEM DMC.
 
 ## About
 
@@ -14,16 +14,27 @@ The Merlin Motion Control app is used in conjunction with Quantum Detector's ret
 
 ## Usage
 
-On start up the main interface opens up, from where you have access to all the relevant status fields and buttons for safely controlling your retractable Merlin detector using the MotionPod.
+In the main interface you have access to all the relevant status fields and buttons for safely controlling your retractable Merlin detector using the MotionPod from MotionLink.
 
 <div align="center">
 <img src="views/static/images/main_window.png" alt="alt text" width="450" height="100%">
+**Figure 1.** Main window with Standby, Move in, Move out and Stop control buttons; Info and Settings actionbar buttons; and fields displaying the current status of the MotionLink system.
+</div>
+
+
+
+<div align="center">
 <img src="views/static/images/settings_modal.png" alt="alt text" width="450" height="100%">
+**Figure 2.** Settings window with advanced settings that can be adjusted and saved for the current session. On exit these settings are disregarded, and the default ones are loaded on relaunching the application.
+</div>
+
+<div align="center">
 <img src="views/static/images/info_modal.png" alt="alt text" width="450" height="100%">
+**Figure 3.** Info window with name of software, version and copyright notice.
 </div>
 
 ### Buttons
-- Move in: Moves the detector in. When it reaches the requested position a stop command is sent to the MotionLink unit. When the current state is 'Stopped', 'Move In' is interlocked to prevent accidentally moving the detector in further. The actual position it will reach is speed and update frequency dependent, and slower speeds imply a higher degree of accuracy. At a speed of 20000 units per second, expect a 2000-3000 difference in requested position and actual position. The clock speed is hard coded and is not accessible to the user. 3200 units equals 1 mm in lateral displacement of the Merlin.
+- Move in: Moves the detector in. When it reaches the requested position a stop command is sent to the MotionLink unit. When the current state is 'Stopped', 'Move In' is interlocked to prevent accidentally moving the detector in further. The actual position it will reach is speed and clock frequency dependent, and slower speeds imply a higher degree of accuracy. At a speed of 20000 units per second, expect a 500-1000 difference in requested position and actual position. The clock speed is hard coded and is not accessible to the user. 3200 units equals 1 mm in lateral displacement of the Merlin.
 - Move out: Moves the detector out. When it reaches position 0 a stop command is issued. The detector will temporarily be at a negative position, but adjust itself back to 0 before its current state is changed to retracted.
 - Stop: Stops any ongoing movement of the detector and changes the current state to 'Stopped', upon which the detector can't be moved in. Move Out needs to be clicked before Move In can be used again.
 
