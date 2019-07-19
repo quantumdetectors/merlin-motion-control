@@ -45,11 +45,16 @@ class MotionLinkInterface():
     global g_is_connected
     global ip_address
 
-    def __init__(self):
+    def __init__(self, debug):
+        global g_is_connected
         Clock.schedule_interval(self.poll_connection_status, CLOCK_SPEED)
-        threading.Thread(target=self.thread_function).start()
-        self.threadA = Thread_A("Connection verification")
-        self.threadA.start()
+        self.debug = debug
+        if self.debug == False:
+            threading.Thread(target=self.thread_function).start()
+            self.threadA = Thread_A("Connection verification")
+            self.threadA.start()
+        else:
+            g_is_connected = True
         self.ml = MotionLink()
         self.is_connected = g_is_connected
         self._is_connected = False
