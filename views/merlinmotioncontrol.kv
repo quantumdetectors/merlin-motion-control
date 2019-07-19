@@ -173,6 +173,11 @@
                 size_hint_x: None
                 width: 200
                 on_press: root.settingswindow()
+            ActionButton:
+                text: "Test"
+                size_hint_x: None
+                width: 200
+                on_press: root.testwindow()
 
     GridLayout:
         size_hint: (1, .9)
@@ -268,3 +273,55 @@
             text: root.software_title + " v" + root.software_version
         Label:
             text: "Quantum Detectors Ltd. (c) " + root.copyright_date
+
+<TestWindow>:
+    size_hint: (None, None)
+    size: (400, 200)
+    FloatLayout:
+        size: (400, 200)
+        font_size: 20
+        GridLayout:
+            size_hint: (0.75, 1)
+            pos_hint: {'x':.25, 'y':.0}
+            rows: 4
+            cols: 2
+            Label:
+                text: "Delay"
+            ModalTextInput:
+                focus: False
+                on_focus:
+                    self.border_color=(.5,.5,.5,1)
+                    self.cursor=(0,0)
+                text: root.delay
+                on_text:
+                    root.delay=self.text
+                on_text_validate:
+                    root.update_fields()
+            Label:
+                text: "Cycles"
+            ModalTextInput:
+                focus: False
+                on_focus:
+                    self.border_color=(.5,.5,.5,1)
+                    self.cursor=(0,0)
+                text: root.cycles
+                on_text:
+                    root.cycles=self.text
+                on_text_validate:
+                    root.update_fields()
+            Label:
+                text: "Estimated time"
+            Label:
+                text: root.total_test_time_label
+            Label:
+                text: "Time remaining"
+            Label:
+                text: root.time_remaining_label
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: (0.25, 1)
+            pos_hint: {'x':.0, 'y':.0}
+            Button:
+                text: "Cycle"
+            Button:
+                text: "Abort"
