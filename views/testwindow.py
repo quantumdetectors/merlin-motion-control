@@ -7,14 +7,14 @@ from kivy.clock import Clock
 from models.rw_galil import MotionLinkInterface
 import copy
 from time import sleep
-from datetime import datetime
+import datetime
 import threading
 
 
 
 
 
-class TestWindow(FloatLayout):
+class TestWindow(ModalView):
     """Add functionality to Settings modal window."""
 
     cycles = StringProperty('200')
@@ -46,35 +46,36 @@ class TestWindow(FloatLayout):
         self.speed = str(self.ml_interface.speed)
         self.speed_out = str(self.ml_interface.speed_out)
         self.requested_position = str(self.ml_interface.requested_position)
+        self.update_fields()
 
 
-        def start_cycle_test(self):
-            self.cycles = str(int(float(self.cycles)))
-            self.delay = str(float(self.delay))
-            thrA = threading.Timer(self.clock_rate, update_time_remaining)
-            #Clock.schedule_interval(self.update_time_remaining,self.clock_rate)
-            for cycle in range(int(self.cycles)):
-                # Move in
-                self.cycle = cycle
-                self.instance.move_in()
-                sleep(float(self.delay))
-                self.instance.move_out()
-                sleep(float(self.delay))
+    def start_cycle_test(self):
+        self.cycles = str(int(float(self.cycles)))
+        self.delay = str(float(self.delay))
+        thrA = threading.Timer(self.clock_rate, update_time_remaining)
+        #Clock.schedule_interval(self.update_time_remaining,self.clock_rate)
+        for cycle in range(int(self.cycles)):
+            # Move in
+            self.cycle = cycle
+            self.instance.move_in()
+            sleep(float(self.delay))
+            self.instance.move_out()
+            sleep(float(self.delay))
 
 
-        def update_fields(self):
-            # Calculate time required
-            time_per_move_in = float(self.requested_position)/float(self.speed)
-            time_per_move_out = float(self.requested_position)/float(self.speed_out)
-            time_per_cycle = time_per_move_in + time_per_move_out + 2*float(self.delay)
-            total_time = int(int(float(self.cycles))*time_per_cycle)
-            self.total_test_time = datetime.timedelta(seconds=total_time)
-            self.total_test_time_label = str(self.total_test_time)
-            self.time_remaining = self.total_test_time
-            self.time_remaining_label = str(self.time_remaining)
+    def update_fields(self):
+        # Calculate time required
+        time_per_move_in = float(self.requested_position)/float(self.speed)
+        time_per_move_out = float(self.requested_position)/float(self.speed_out)
+        time_per_cycle = time_per_move_in + time_per_move_out + 2*float(self.delay)
+        total_time = int(int(float(self.cycles))*time_per_cycle)
+        self.total_test_time = datetime.timedelta(seconds=total_time)
+        self.total_test_time_label = str(self.total_test_time)
+        self.time_remaining = self.total_test_time
+        self.time_remaining_label = str(self.time_remaining)
 
 
 
-        def update_time_remaining(self):
-            self.time_remaining = self.time_remaining - datetime.timedelta(seconds=self.clock_rate)
-            self.time_remaining_label = str(self.time_remaining)
+    def update_time_remaining(self):
+        self.time_remaining = self.time_remaining - datetime.timedelta(seconds=self.clock_rate)
+        self.time_remaining_label = str(self.time_remaining)
