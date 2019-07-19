@@ -9,6 +9,7 @@ from kivy.uix.label import Label
 from kivy.clock import Clock, mainthread
 from views.settingswindow import SettingsWindow
 from views.infowindow import InfoWindow
+from views.testwindow import TestWindow
 from views.actionbuttons import ActionButtons
 from views.statusfields import StatusFields
 from views.labels import Labels
@@ -34,10 +35,12 @@ class ContainerGrid(FloatLayout):
     gatan_veto_msg = StringProperty('Default')
     _is_connected = BooleanProperty('False')
     connection_status = StringProperty('Disconnected')
+    move = 0
     state = NumericProperty(0)
     interlocked = 0
     inserted = 0
-    ml_interface = MotionLinkInterface(debug=True)
+    debug = False
+    ml_interface = MotionLinkInterface()
 
     def disable_window(self):
         return True if self.connection_status == 'Disconnected' else False
@@ -70,8 +73,9 @@ class ContainerGrid(FloatLayout):
         impact the functionality of the Kivy framework.
         """
         super(ContainerGrid, self).__init__(**kwargs)
-        Clock.schedule_interval(self.update_status_fields, CLOCK_SPEED)
+        Clock.schedule_interval(self.update_status_fields, 100*CLOCK_SPEED)
         self.settings = settings
+        self.ml_interface.debug = self.debug
         self.ml_interface.software_version = str(self.settings["software_version"])
         self.ml_interface.software_title = self.settings["title"]
         self.ml_interface.mer_ip_address = self.settings["ip_address"]
@@ -88,6 +92,7 @@ class ContainerGrid(FloatLayout):
         self.title = self.ml_interface.software_title
         self.settingsWindow = SettingsWindow(ml_object=self.ml_interface)
         self.infoWindow = InfoWindow(ml_object=self.ml_interface)
+        self.testWindow = TestWindow(self, ml_interface=self.ml_interface)
         self.ml_interface.update_ml()
         self.ml_interface.write()
         self.set_requested_position()
@@ -102,13 +107,15 @@ class ContainerGrid(FloatLayout):
 
     def move_in(self):
         """Call move in function on the MotionLink object."""
-        self.ml_interface.move(1)
+        #self.ml_interface.move(1)
         self.requested_state = 'Inserted'
+        self.move = 1
 
     def move_out(self):
         """Call move in function on the MotionLink object."""
         self.requested_state = 'Retracted'
-        self.ml_interface.move(0)
+        self.move = 0
+        #self.ml_interface.move(0)
 
     def stop(self):
         """Call stop function on the MotionLink object."""
@@ -156,9 +163,15 @@ class ContainerGrid(FloatLayout):
                         'No' if False.
 
         """
+
+
         self.connection_status = 'Connection established' if self.ml_interface.is_connected else 'Disconnected'
         self.requested_position = self.ml_interface.requested_position
+
+        self.ml_interface.move(self.move)
+
         self.rp = self.ml_interface.rp
+
 
         if self.requested_position is '':
             self.requested_position = '0'
@@ -184,3 +197,8 @@ class ContainerGrid(FloatLayout):
     def infowindow(self):
         """Open Info window."""
         self.infoWindow.open()
+
+
+    def testwindow(self):
+        """Open Info window."""
+        self.testWindow.open()
