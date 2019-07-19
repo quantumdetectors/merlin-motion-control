@@ -56,6 +56,8 @@ class MotionLink():
                 self.state = 2
             elif command == 'merin=0':
                 self.state = 0
+            elif command == 'merin=3':
+                self.state = 3
             elif command == 'RP':
                 if self.state == 1:
                     debug_pos = self.last_debug_pos+722
@@ -70,6 +72,10 @@ class MotionLink():
                         debug_pos = self.last_debug_pos-722
                         self.last_debug_pos = debug_pos
                         return str(debug_pos)
+                elif self.state == 3:
+                    debug_pos = self.last_debug_pos+722
+                    self.last_debug_pos = debug_pos
+                    return str(debug_pos)
             elif command == 'MG @IN[1]':
                 return random.randint(0,1)
             elif command == 'MG @OUT[1]':
@@ -77,14 +83,14 @@ class MotionLink():
             elif command.split('=')[0] == 'merspeed':
                 cmd = command.split('=')
                 if cmd[1] == '?':
-                    return self.merspeed
+                    return str(self.merspeed)
                 else:
                     self.merspeed = cmd[1]
                     print(command)
             elif command.split('=')[0] == 'merspeec':
                 cmd = command.split('=')
                 if cmd[1] == '?':
-                    return self.merspeec
+                    return str(self.merspeec)
                 else:
                     self.merspeec = cmd[1]
                     print(command)
@@ -92,6 +98,8 @@ class MotionLink():
                 print('Request position set to', command.split('=')[1] )
             elif command == 'merstat=?':
                 return random.randint(0,3)
+            elif command.split('=')[0] == 'stdbypos':
+                print('Standby position set to', command.split('=')[1] )
 
 
     def move(self, cmd):

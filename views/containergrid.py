@@ -35,9 +35,9 @@ class ContainerGrid(FloatLayout):
     _is_connected = BooleanProperty('False')
     connection_status = StringProperty('Disconnected')
     state = NumericProperty(0)
-    ml_interface = MotionLinkInterface()
     interlocked = 0
     inserted = 0
+    ml_interface = MotionLinkInterface(debug=True)
 
     def disable_window(self):
         return True if self.connection_status == 'Disconnected' else False
@@ -72,12 +72,11 @@ class ContainerGrid(FloatLayout):
         super(ContainerGrid, self).__init__(**kwargs)
         Clock.schedule_interval(self.update_status_fields, CLOCK_SPEED)
         self.settings = settings
-        self.ml_interface.debug = False
-        self.ml_interface.software_version = self.settings["software_version"]
+        self.ml_interface.software_version = str(self.settings["software_version"])
         self.ml_interface.software_title = self.settings["title"]
         self.ml_interface.mer_ip_address = self.settings["ip_address"]
-        self.ml_interface.speed = self.settings["speed"]
-        self.ml_interface.speed_out = self.settings["speed_out"]
+        self.ml_interface.speed = str(self.settings["speed"])
+        self.ml_interface.speed_out = str(self.settings["speed_out"])
         self.standby_position = str(
             self.settings["standby_position"]
         )
