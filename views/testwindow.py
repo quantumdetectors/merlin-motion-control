@@ -40,7 +40,6 @@ class TestWindow(ModalView):
         super(TestWindow, self).__init__(**kwargs)
         self.ml_interface = ml_interface
         self.instance = instance
-        self.ml_interface.debug = True
         self.cycles = '200'
         self.delay = '10.0'
         self.speed = str(self.ml_interface.speed)

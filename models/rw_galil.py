@@ -26,8 +26,6 @@ class Thread_A(threading.Thread):
             global ip_address
             g_is_connected = ping(ip_address)
 
-
-
 class MotionLinkInterface():
     rp = '0'
     gatan_in = 1
@@ -45,10 +43,9 @@ class MotionLinkInterface():
     global g_is_connected
     global ip_address
 
-    def __init__(self, debug):
+    def __init__(self):
         global g_is_connected
         Clock.schedule_interval(self.poll_connection_status, CLOCK_SPEED)
-        self.debug = debug
         if self.debug == False:
             threading.Thread(target=self.thread_function).start()
             self.threadA = Thread_A("Connection verification")

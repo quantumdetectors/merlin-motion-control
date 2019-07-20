@@ -35,7 +35,6 @@ class ContainerGrid(FloatLayout):
     gatan_veto_msg = StringProperty('Default')
     _is_connected = BooleanProperty('False')
     connection_status = StringProperty('Disconnected')
-    move = 0
     state = NumericProperty(0)
     interlocked = 0
     inserted = 0
@@ -107,15 +106,14 @@ class ContainerGrid(FloatLayout):
 
     def move_in(self):
         """Call move in function on the MotionLink object."""
-        #self.ml_interface.move(1)
         self.requested_state = 'Inserted'
-        self.move = 1
+        self.ml_interface.move(1)
+
 
     def move_out(self):
         """Call move in function on the MotionLink object."""
         self.requested_state = 'Retracted'
-        self.move = 0
-        #self.ml_interface.move(0)
+        self.ml_interface.move(0)
 
     def stop(self):
         """Call stop function on the MotionLink object."""
@@ -167,8 +165,6 @@ class ContainerGrid(FloatLayout):
 
         self.connection_status = 'Connection established' if self.ml_interface.is_connected else 'Disconnected'
         self.requested_position = self.ml_interface.requested_position
-
-        self.ml_interface.move(self.move)
 
         self.rp = self.ml_interface.rp
 
