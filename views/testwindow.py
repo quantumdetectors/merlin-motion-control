@@ -3,7 +3,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.modalview import ModalView
 from kivy.properties import StringProperty, BooleanProperty, ListProperty, ObjectProperty
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from models.rw_galil import MotionLinkInterface
 import copy
 from time import sleep
@@ -24,6 +24,7 @@ class TestWindow(ModalView):
     total_test_time = 0
     time_remaining = 0
     clock_rate = 1
+    running = False
 
     def __init__(self, instance, ml_interface, **kwargs):
         """Initialize Settings modal window of main interface.
@@ -42,21 +43,45 @@ class TestWindow(ModalView):
         self.requested_position = str(self.ml_interface.requested_position)
         self.update_fields()
 
+    def cycle_test(self):
+        thrB = threading.Thread(target=self.start_cycle_test)
+        thrB.start()
+
     def start_cycle_test(self):
+        self.running = True
         self.cycles = str(int(float(self.cycles)))
         self.delay = str(float(self.delay))
-        thrA = threading.Timer(self.clock_rate, update_time_remaining)
-        #Clock.schedule_interval(self.update_time_remaining,self.clock_rate)
+        thrA = threading.Thread(target=self.schedule_updater)
+        thrA.start()
+        self.cycle = '0'
         for cycle in range(int(self.cycles)):
-            # Move in
-            self.cycle = cycle
-            self.instance.move_in()
-            sleep(float(self.delay))
-            self.instance.move_out()
-            sleep(float(self.delay))
+            while self.running:
+                # Move in
+                self.cycle = str(int(float(self.cycle))+1)
+                print(self.cycle)
+                self.instance.move_in()
+                while not 'Inserted' in self.instance.current_state:
+                    sleep(1)
+                sleep(float(self.delay))
+                self.instance.move_out()
+                while not 'Retracted' in self.instance.current_state:
+                    sleep(1)
+                sleep(float(self.delay))
+        thrA.join()
 
+    def schedule_updater(self):
+        Clock.schedule_interval(self.update_time_remaining,self.clock_rate)
+
+    @mainthread
+    def abort(self):
+        self.running = False
+
+    @mainthread
     def update_fields(self):
         # Calculate time required
+        self.speed = str(self.ml_interface.speed)
+        self.speed_out = str(self.ml_interface.speed_out)
+        self.requested_position = str(self.ml_interface.requested_position)
         time_per_move_in = float(self.requested_position)/float(self.speed)
         time_per_move_out = float(self.requested_position)/float(self.speed_out)
         time_per_cycle = time_per_move_in + time_per_move_out + 2*float(self.delay)
@@ -66,6 +91,7 @@ class TestWindow(ModalView):
         self.time_remaining = self.total_test_time
         self.time_remaining_label = str(self.time_remaining)
 
-    def update_time_remaining(self):
+    @mainthread
+    def update_time_remaining(self,*args):
         self.time_remaining = self.time_remaining - datetime.timedelta(seconds=self.clock_rate)
         self.time_remaining_label = str(self.time_remaining)

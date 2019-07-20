@@ -150,10 +150,10 @@ class MotionLink():
         self._execute('merspeec={speed_out}'.format(speed_out=speed_out))
 
     def get_speed(self):
-        return int(float(self._execute('merspeed=?')))
+        return str(int(float(self._execute('merspeed=?'))))
 
     def get_speed_out(self):
-        return int(float(self._execute('merspeec=?')))
+        return str(int(float(self._execute('merspeec=?'))))
 
     def set_values(self):
         if self.speed.isdigit() and (int(self.speed) > 40000 or int(self.speed) < 1):
@@ -170,5 +170,6 @@ class MotionLink():
             print('IP address:',self.ip_address)
             self.mer_ip_address = self.ip_address
         else:
-            print("Invalid IP address.", self.ip_address, "is not a valid IPv4 address.")
+            #print("Invalid IP address.", self.ip_address, "is not a valid IPv4 address.")
             self.ip_address = self.mer_ip_address
+            #print(self.mer_ip_address)

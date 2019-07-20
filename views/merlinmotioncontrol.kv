@@ -283,7 +283,7 @@
         GridLayout:
             size_hint: (0.75, 1)
             pos_hint: {'x':.25, 'y':.0}
-            rows: 4
+            rows: 5
             cols: 2
             Label:
                 text: "Delay"
@@ -317,11 +317,17 @@
                 text: "Time remaining"
             Label:
                 text: root.time_remaining_label
+            Label:
+                text: "Cycle"
+            Label:
+                text: root.cycle
         BoxLayout:
             orientation: "vertical"
             size_hint: (0.25, 1)
             pos_hint: {'x':.0, 'y':.0}
             Button:
                 text: "Cycle"
+                on_press: root.cycle_test()
             Button:
                 text: "Abort"
+                on_press: root.abort()

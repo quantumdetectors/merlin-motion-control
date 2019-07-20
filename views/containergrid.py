@@ -97,6 +97,7 @@ class ContainerGrid(FloatLayout):
         self.set_requested_position()
         self.set_standby_position()
 
+    @mainthread
     def standby(self):
         """Call move to standby."""
         print('Containergrid',self.standby_position)
@@ -104,30 +105,35 @@ class ContainerGrid(FloatLayout):
         self.ml_interface.standby()
         self.requested_state = 'Standby'
 
+    @mainthread
     def move_in(self):
         """Call move in function on the MotionLink object."""
         self.requested_state = 'Inserted'
         self.ml_interface.move(1)
 
-
+    @mainthread
     def move_out(self):
         """Call move in function on the MotionLink object."""
         self.requested_state = 'Retracted'
         self.ml_interface.move(0)
 
+    @mainthread
     def stop(self):
         """Call stop function on the MotionLink object."""
         self.requested_state = 'Stopped'
         self.ml_interface.stop()
 
+    @mainthread
     def set_requested_position(self):
         self.ml_interface.requested_position = self.requested_position
         self.ml_interface.set_requested_position()
 
+    @mainthread
     def set_standby_position(self):
         self.ml_interface.standby_position = self.standby_position
         self.ml_interface.set_standby_position()
 
+    @mainthread
     def update_status_fields(self, *args):
         """Call read_rp on the MotionLink object and update status fields.
 
@@ -198,3 +204,4 @@ class ContainerGrid(FloatLayout):
     def testwindow(self):
         """Open Info window."""
         self.testWindow.open()
+        self.testWindow.update_fields()

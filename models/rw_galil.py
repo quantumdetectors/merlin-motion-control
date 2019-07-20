@@ -6,10 +6,9 @@ import threading
 import time
 from models.ping import ping
 
-g_is_connected = False
+g_is_connected = True
 ip_address = '0.0.0.0'
 CLOCK_SPEED = 0.00001
-
 
 class Thread_A(threading.Thread):
 
@@ -25,6 +24,16 @@ class Thread_A(threading.Thread):
             global g_is_connected
             global ip_address
             g_is_connected = ping(ip_address)
+
+class MotionLinkThread(threading.Thread):
+
+        def __init__(self, name):
+            threading.Thread.__init__(self)
+            self.name = name
+
+        def run(self):
+            global ip_address
+            Clock.schedule_interval(self.attempt_connection, CLOCK_SPEED)
 
 class MotionLinkInterface():
     rp = '0'
@@ -62,7 +71,6 @@ class MotionLinkInterface():
                 return fn(self, *args, **kwargs)
         return wrapper
 
-    @mainthread
     def poll_connection_status(self, *args):
         global g_is_connected
         self.is_connected = g_is_connected
@@ -82,6 +90,7 @@ class MotionLinkInterface():
             self.current_state = self.ml.read_merstat()
 
     def update_ml(self):
+        print('here1')
         global ip_address
         self.ml.speed = self.speed
         self.ml.speed_out = self.speed_out
@@ -93,6 +102,7 @@ class MotionLinkInterface():
 
     @with_connection
     def write(self):
+        print('here2')
         self.ml.set_values()
 
     @with_connection
