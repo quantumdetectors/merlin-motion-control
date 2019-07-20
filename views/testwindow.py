@@ -55,7 +55,7 @@ class TestWindow(ModalView):
         thrA.start()
         self.cycle = '0'
         for cycle in range(int(self.cycles)):
-            while self.running:
+            if self.running:
                 # Move in
                 self.cycle = str(int(float(self.cycle))+1)
                 print(self.cycle)
@@ -67,6 +67,8 @@ class TestWindow(ModalView):
                 while not 'Retracted' in self.instance.current_state:
                     sleep(1)
                 sleep(float(self.delay))
+            else:
+                break
         thrA.join()
 
     def schedule_updater(self):
@@ -94,4 +96,7 @@ class TestWindow(ModalView):
     @mainthread
     def update_time_remaining(self,*args):
         self.time_remaining = self.time_remaining - datetime.timedelta(seconds=self.clock_rate)
-        self.time_remaining_label = str(self.time_remaining)
+        if self.time_remaining <= datetime.timedelta(seconds=0):
+            self.time_remaining_label = str(datetime.timedelta(seconds=0))
+        else:
+            self.time_remaining_label = str(self.time_remaining)
