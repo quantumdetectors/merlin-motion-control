@@ -97,6 +97,7 @@ class TestWindow(ModalView):
     @mainthread
     def abort(self):
         self.running = False
+        self.instance.requested_state = 'Cycle Test Aborted'
 
     @mainthread
     def update_fields(self):
