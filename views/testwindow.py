@@ -10,10 +10,6 @@ from time import sleep
 import datetime
 import threading
 
-
-
-
-
 class TestWindow(ModalView):
     """Add functionality to Settings modal window."""
 
@@ -28,7 +24,6 @@ class TestWindow(ModalView):
     total_test_time = 0
     time_remaining = 0
     clock_rate = 1
-
 
     def __init__(self, instance, ml_interface, **kwargs):
         """Initialize Settings modal window of main interface.
@@ -47,7 +42,6 @@ class TestWindow(ModalView):
         self.requested_position = str(self.ml_interface.requested_position)
         self.update_fields()
 
-
     def start_cycle_test(self):
         self.cycles = str(int(float(self.cycles)))
         self.delay = str(float(self.delay))
@@ -61,7 +55,6 @@ class TestWindow(ModalView):
             self.instance.move_out()
             sleep(float(self.delay))
 
-
     def update_fields(self):
         # Calculate time required
         time_per_move_in = float(self.requested_position)/float(self.speed)
@@ -72,8 +65,6 @@ class TestWindow(ModalView):
         self.total_test_time_label = str(self.total_test_time)
         self.time_remaining = self.total_test_time
         self.time_remaining_label = str(self.time_remaining)
-
-
 
     def update_time_remaining(self):
         self.time_remaining = self.time_remaining - datetime.timedelta(seconds=self.clock_rate)
