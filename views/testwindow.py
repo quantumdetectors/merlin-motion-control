@@ -9,6 +9,7 @@ import copy
 from time import sleep
 import datetime
 import threading
+import time
 
 class TestWindow(ModalView):
     """Add functionality to Settings modal window."""
@@ -21,10 +22,13 @@ class TestWindow(ModalView):
     requested_position = StringProperty('180000')
     total_test_time_label = StringProperty('Default')
     time_remaining_label = StringProperty('Default')
+    time_estimate_label = StringProperty('Estimated time')
     total_test_time = 0
     time_remaining = 0
+    new_time_estimate = 0
     clock_rate = 1
     running = False
+    new_time = 0
 
     def __init__(self, instance, ml_interface, **kwargs):
         """Initialize Settings modal window of main interface.
@@ -49,12 +53,14 @@ class TestWindow(ModalView):
 
     def start_cycle_test(self):
         self.running = True
+        self.new_time = 0
         self.cycles = str(int(float(self.cycles)))
         self.delay = str(float(self.delay))
         thrA = threading.Thread(target=self.schedule_updater)
         thrA.start()
         self.cycle = '0'
         for cycle in range(int(self.cycles)):
+            start_time = time.time()
             if self.running:
                 # Move in
                 self.cycle = str(int(float(self.cycle))+1)
@@ -67,6 +73,20 @@ class TestWindow(ModalView):
                 while not 'Retracted' in self.instance.current_state:
                     sleep(1)
                 sleep(float(self.delay))
+                elapsed_time = time.time() - start_time
+                #if self.new_time_estimate != time_remaining:
+                if self.new_time == 0:
+                    self.new_time_estimate = float(elapsed_time)
+                    time_new = int(float(self.new_time_estimate*(int(float(self.cycles))-int(float(self.cycle)))))
+                    time_total = int(float(self.new_time_estimate*int(float(self.cycles))))
+                    self.time_remaining = datetime.timedelta(seconds=time_new)
+                    self.total_test_time = datetime.timedelta(seconds=time_total)
+                    self.time_remaining_label = str(self.time_remaining)
+                    self.total_test_time_label = str(self.total_test_time)
+                    time_estimate_label = 'Total time'
+                    self.new_time = 1
+
+
             else:
                 break
         thrA.join()
@@ -84,14 +104,18 @@ class TestWindow(ModalView):
         self.speed = str(self.ml_interface.speed)
         self.speed_out = str(self.ml_interface.speed_out)
         self.requested_position = str(self.ml_interface.requested_position)
-        time_per_move_in = float(self.requested_position)/float(self.speed)
-        time_per_move_out = float(self.requested_position)/float(self.speed_out)
-        time_per_cycle = time_per_move_in + time_per_move_out + 2*float(self.delay)
+        if self.new_time == 1:
+            time_per_cycle = self.new_time_estimate
+        else:
+            time_per_move_in = float(self.requested_position)/float(self.speed)
+            time_per_move_out = float(self.requested_position)/float(self.speed_out)
+            time_per_cycle = time_per_move_in + time_per_move_out + 2*float(self.delay)
         total_time = int(int(float(self.cycles))*time_per_cycle)
         self.total_test_time = datetime.timedelta(seconds=total_time)
         self.total_test_time_label = str(self.total_test_time)
         self.time_remaining = self.total_test_time
         self.time_remaining_label = str(self.time_remaining)
+
 
     @mainthread
     def update_time_remaining(self,*args):
