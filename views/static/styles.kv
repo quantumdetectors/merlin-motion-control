@@ -1,3 +1,12 @@
+<BackgroundColor@Widget>
+    background_color: .15, .15, .15, 1
+    canvas.before:
+        Color:
+            rgba: root.background_color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
 <CustomButton@Button>:
     font_size: root.height*0.2
     color: 0,0,0,1
@@ -39,7 +48,6 @@
 
 <CustomLabel@Label>:
     font_size: root.height*0.3
-    value: 0
 
 <ModalLabel@Label>:
     font_size: 20
