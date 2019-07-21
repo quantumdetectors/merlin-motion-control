@@ -12,6 +12,9 @@ class MotionLink():
     speed_out = ''
     merspeed = '20000'
     merspeec = '20000'
+    requested_position = ''
+    standby_position = ''
+    current_state = ''
     debug = False
     last_debug_pos = 0
     state = 0
@@ -60,21 +63,34 @@ class MotionLink():
                 self.state = 3
             elif command == 'RP':
                 if self.state == 1:
-                    debug_pos = self.last_debug_pos+722
-                    self.last_debug_pos = debug_pos
+                    if int(float(self.requested_position)) > int(float(self.last_debug_pos)):
+                        self.current_state = 2
+                        debug_pos = self.last_debug_pos+722
+                        self.last_debug_pos = debug_pos
+                    else:
+                        self.current_state = 1
+                        debug_pos = self.last_debug_pos
                     return str(debug_pos)
                 elif self.state == 2:
+                    self.current_state = 3
                     return str(self.last_debug_pos)
                 elif self.state == 0:
                     if self.last_debug_pos==0:
+                        self.current_state = 0
                         return '0'
                     else:
+                        self.current_state = 2
                         debug_pos = self.last_debug_pos-722
                         self.last_debug_pos = debug_pos
                         return str(debug_pos)
                 elif self.state == 3:
-                    debug_pos = self.last_debug_pos+722
-                    self.last_debug_pos = debug_pos
+                    if int(float(self.standby_position)) > int(float(self.last_debug_pos)):
+                        self.current_state = 2
+                        debug_pos = self.last_debug_pos+722
+                        self.last_debug_pos = debug_pos
+                    else:
+                        self.current_state = 4
+                        debug_pos = self.last_debug_pos
                     return str(debug_pos)
             elif command == 'MG @IN[1]':
                 return random.randint(0,1)
@@ -86,20 +102,21 @@ class MotionLink():
                     return str(self.merspeed)
                 else:
                     self.merspeed = cmd[1]
-                    print(command)
+                    print('g:', command)
             elif command.split('=')[0] == 'merspeec':
                 cmd = command.split('=')
                 if cmd[1] == '?':
                     return str(self.merspeec)
                 else:
                     self.merspeec = cmd[1]
-                    print(command)
+                    print('g:', command)
             elif command.split('=')[0] == 'req_pos':
-                print('Request position set to', command.split('=')[1] )
+                print('g: Request position set to', command.split('=')[1] )
+                print('req_pos: ', self.requested_position)
             elif command == 'merstat=?':
-                return random.randint(0,3)
+                return self.current_state
             elif command.split('=')[0] == 'stdbypos':
-                print('Standby position set to', command.split('=')[1] )
+                print('g: Standby position set to', command.split('=')[1] )
 
 
     def move(self, cmd):
@@ -123,24 +140,30 @@ class MotionLink():
         return val
 
     def set_requested_position(self,cmd):
+        if self.debug:
+            self.requested_position = cmd
         val = self._execute('req_pos={}'.format(cmd))
         return val
 
     def set_standby_position(self,cmd):
+        if self.debug:
+            self.standby_position = cmd
         val = self._execute('stdbypos={}'.format(cmd))
         return val
 
     def get_gatan_in(self):
         if self.debug:
-            if self._execute('MG @IN[1]') == 1:
-                return 0
-            else:
-                return 1
+            return 0
+            #if self._execute('MG @IN[1]') == 1:
+            #    return 0
+            #else:
+            #    return 1
         return 0 if float(self._execute('MG @IN[1]')) else 1
 
     def get_gatan_veto(self):
         if self.debug:
-            return self._execute('MG @OUT[1]')
+            return 0
+            #return self._execute('MG @OUT[1]')
         return int(float(self._execute('MG @OUT[1]')))
 
     def set_speed(self, speed):

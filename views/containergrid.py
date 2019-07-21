@@ -94,6 +94,7 @@ class ContainerGrid(FloatLayout):
         self.testWindow = TestWindow(self, ml_interface=self.ml_interface)
         if not self.debug:
             self.ml_interface.initialize_poll_connection_thread()
+        self.ml_interface.initialize_read_thread()
         self.ml_interface.update_ml()
         self.ml_interface.write()
         self.set_requested_position()
@@ -102,8 +103,6 @@ class ContainerGrid(FloatLayout):
     @mainthread
     def standby(self):
         """Call move to standby."""
-        print('Containergrid',self.standby_position)
-        print('ML',self.ml_interface.standby_position)
         self.ml_interface.standby()
         self.requested_state = 'Standby'
 
@@ -170,12 +169,10 @@ class ContainerGrid(FloatLayout):
 
         """
 
-
         self.connection_status = 'Connection established' if self.ml_interface.is_connected else ('Debug' if self.debug == True else 'Disconnected')
         self.requested_position = self.ml_interface.requested_position
 
         self.rp = self.ml_interface.rp
-
 
         if self.requested_position is '':
             self.requested_position = '0'
@@ -201,7 +198,6 @@ class ContainerGrid(FloatLayout):
     def infowindow(self):
         """Open Info window."""
         self.infoWindow.open()
-
 
     def testwindow(self):
         """Open Info window."""

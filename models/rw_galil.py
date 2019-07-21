@@ -50,10 +50,11 @@ class MotionLinkInterface():
         self._is_connected = False
 
     def initialize_poll_connection_thread(self):
-        threading.Thread(target=self.thread_function).start()
         self.threadA = Thread_A("Connection verification")
         self.threadA.start()
 
+    def initialize_read_thread(self):
+        threading.Thread(target=self.thread_function).start()
 
     def with_connection(fn):
         def wrapper(self,*args,**kwargs):
@@ -73,7 +74,7 @@ class MotionLinkInterface():
         Clock.schedule_interval(self.read, 100*CLOCK_SPEED)
 
     def read(self, *args):
-        if self.is_connected:
+        if self.is_connected or self.debug:
             self.rp = self.ml.read_rp()
             self.gatan_in = self.ml.get_gatan_in()
             self.gatan_veto = self.ml.get_gatan_veto()
