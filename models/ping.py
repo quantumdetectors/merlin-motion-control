@@ -9,8 +9,9 @@ def ping(host):
 
     # Option for the number of packets as a function of
     param = '-n' if platform.system().lower()=='windows' else '-c'
+    timeout = '-w' if platform.system().lower()=='windows' else '-W'
 
     # Building the command. Ex: "ping -c 1 google.com"
-    command = ['ping', param, '1', '-W 10', '-t 1', host]
+    command = ['ping', param, '1', timeout, '10', '-t 1', host]
 
     return subprocess.call(command, stdout=open(os.devnull, 'wb')) == 0
