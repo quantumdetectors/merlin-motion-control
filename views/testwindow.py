@@ -85,14 +85,13 @@ class TestWindow(ModalView):
                     self.total_test_time_label = str(self.total_test_time)
                     time_estimate_label = 'Total time'
                     self.new_time = 1
-
-
             else:
                 break
+        self.cycle_test_timer.cancel()
         thrA.join()
 
     def schedule_updater(self):
-        Clock.schedule_interval(self.update_time_remaining,self.clock_rate)
+        self.cycle_test_timer = Clock.schedule_interval(self.update_time_remaining,self.clock_rate)
 
     @mainthread
     def abort(self):
