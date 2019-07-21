@@ -38,7 +38,7 @@ class ContainerGrid(FloatLayout):
     state = NumericProperty(0)
     interlocked = 0
     inserted = 0
-    debug = False
+    debug = True
     ml_interface = MotionLinkInterface()
 
     def disable_window(self):
