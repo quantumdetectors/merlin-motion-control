@@ -75,9 +75,9 @@ class ContainerGrid(FloatLayout):
         Clock.schedule_interval(self.update_status_fields, 100*CLOCK_SPEED)
         self.settings = settings
         self.ml_interface.debug = self.debug
+        self.ml_interface.mer_ip_address = self.settings["ip_address"]
         self.ml_interface.software_version = str(self.settings["software_version"])
         self.ml_interface.software_title = self.settings["title"]
-        self.ml_interface.mer_ip_address = self.settings["ip_address"]
         self.ml_interface.speed = str(self.settings["speed"])
         self.ml_interface.speed_out = str(self.settings["speed_out"])
         self.standby_position = str(
@@ -92,6 +92,8 @@ class ContainerGrid(FloatLayout):
         self.settingsWindow = SettingsWindow(ml_object=self.ml_interface)
         self.infoWindow = InfoWindow(ml_object=self.ml_interface)
         self.testWindow = TestWindow(self, ml_interface=self.ml_interface)
+        if not self.debug:
+            self.ml_interface.initialize_poll_connection_thread()
         self.ml_interface.update_ml()
         self.ml_interface.write()
         self.set_requested_position()
