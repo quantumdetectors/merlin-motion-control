@@ -6,7 +6,7 @@
         CustomLabel:
             size_hint: (1, .11)
             pos_hint: {'x':.0, 'y':.88}
-            text: 'root.software_title + " v" + root.software_version'
+            text: root.software_title + " v" + root.software_version
         GridLayout:
             size_hint: (1, .7)
             pos_hint: {'x':.0, 'y':.16}
@@ -21,9 +21,9 @@
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
                     self.cursor=(0,0)
-                text: 'ip address' #root.ip_address
-                #on_text:
-                #    root.ip_address=self.text
+                text: root.ip_address
+                on_text:
+                    root.ip_address=self.text
             CustomLabel:
                 text: "Speed"
             ModalTextInput:
@@ -31,9 +31,9 @@
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
                     self.cursor=(0,0)
-                text: 'speed' #root.speed
-                #on_text:
-                #    root.speed=self.text
+                text: root.speed
+                on_text:
+                    root.speed=self.text
             CustomLabel:
                 text: "Speed Out"
             ModalTextInput:
@@ -41,9 +41,9 @@
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
                     self.cursor=(0,0)
-                text: 'speed out' #root.speed_out
-                #on_text:
-                #    root.speed_out=self.text
+                text: root.speed_out
+                on_text:
+                    root.speed_out=self.text
             CustomLabel:
                 text: "Requested Position"
             ModalTextInput:
@@ -52,9 +52,9 @@
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
                     self.cursor=(0,0)
-                text: 'req pos'# root.requested_position
-                #on_text:
-                #    root.requested_position=self.text
+                text: root.requested_position
+                on_text:
+                    root.requested_position=self.text
             CustomLabel:
                 text: "Standby Position"
             ModalTextInput:
@@ -62,12 +62,13 @@
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
                     self.cursor=(0,0)
-                #text: root.standby_position
-                #on_text:
-                #    root.standby_position=self.text
+                text: root.standby_position
+                on_text:
+                    root.standby_position=self.text
 
         ModalButton:
             size_hint: (.39, .12)
             pos_hint: {'x':.3, 'y':0.08}
             text: "Update values"
-            #on_press: root.set_values()
+            on_press: root.set_values()
+
