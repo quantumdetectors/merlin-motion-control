@@ -6,7 +6,7 @@ import threading
 import time
 from models.ping import ping
 
-g_is_connected = True
+g_is_connected = False
 ip_address = '0.0.0.0'
 CLOCK_SPEED = 0.00001
 
@@ -90,7 +90,6 @@ class MotionLinkInterface():
             self.current_state = self.ml.read_merstat()
 
     def update_ml(self):
-        print('here1')
         global ip_address
         self.ml.speed = self.speed
         self.ml.speed_out = self.speed_out
@@ -102,7 +101,6 @@ class MotionLinkInterface():
 
     @with_connection
     def write(self):
-        print('here2')
         self.ml.set_values()
 
     @with_connection
