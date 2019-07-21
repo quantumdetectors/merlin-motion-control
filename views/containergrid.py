@@ -169,7 +169,7 @@ class ContainerGrid(FloatLayout):
         """
 
 
-        self.connection_status = 'Connection established' if self.ml_interface.is_connected else 'Disconnected'
+        self.connection_status = 'Connection established' if self.ml_interface.is_connected else ('Debug' if self.debug == True else 'Disconnected')
         self.requested_position = self.ml_interface.requested_position
 
         self.rp = self.ml_interface.rp
