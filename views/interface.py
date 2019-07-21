@@ -13,6 +13,7 @@ from kivy.lang import Builder
 from views.modals.settings import settingswindow
 #from views.modals.settings.settingswindow import SettingsWindow
 from views.modals.info import infowindow
+from views.modals.test import testwindow
 #from views.modals.info.infowindow import InfoWindow
 #from views.screens.main.mainscreen import MainScreen
 #from views.screens.main.actionbuttons import ActionButtons
@@ -38,6 +39,7 @@ class MerlinMotionControlApp(App):
         Builder.load_file(styles.__file__.split('.py')[0]+'.kv')
         Builder.load_file(settingswindow.__file__.split('.py')[0]+'.kv')
         Builder.load_file(infowindow.__file__.split('.py')[0]+'.kv')
+        Builder.load_file(testwindow.__file__.split('.py')[0]+'.kv')
         Builder.load_file(mainscreen.__file__.split('.py')[0]+'.kv')
 
     def build(self):

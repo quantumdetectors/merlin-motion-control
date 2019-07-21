@@ -1,0 +1,58 @@
+
+<TestWindow>:
+    size_hint: (None, None)
+    size: (400, 200)
+    FloatLayout:
+        size: (400, 200)
+        font_size: 20
+        GridLayout:
+            size_hint: (0.75, 1)
+            pos_hint: {'x':.25, 'y':.0}
+            rows: 5
+            cols: 2
+            Label:
+                text: "Delay"
+            ModalTextInput:
+                focus: False
+                on_focus:
+                    self.border_color=(.5,.5,.5,1)
+                    self.cursor=(0,0)
+                text: root.delay
+                on_text:
+                    root.delay=self.text
+                on_text_validate:
+                    root.update_fields()
+            Label:
+                text: "Cycles"
+            ModalTextInput:
+                focus: False
+                on_focus:
+                    self.border_color=(.5,.5,.5,1)
+                    self.cursor=(0,0)
+                text: root.cycles
+                on_text:
+                    root.cycles=self.text
+                on_text_validate:
+                    root.update_fields()
+            Label:
+                text: root.time_estimate_label
+            Label:
+                text: root.total_test_time_label
+            Label:
+                text: "Time remaining"
+            Label:
+                text: root.time_remaining_label
+            Label:
+                text: "Cycle"
+            Label:
+                text: root.cycle
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: (0.25, 1)
+            pos_hint: {'x':.0, 'y':.0}
+            Button:
+                text: "Cycle"
+                on_press: root.cycle_test()
+            Button:
+                text: "Abort"
+                on_press: root.abort()
