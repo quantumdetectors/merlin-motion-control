@@ -1,0 +1,138 @@
+<ContainerGrid>:
+    id: container
+    canvas.before:
+        Color:
+            rgba: .22,.22,.22,1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    disabled: root.window_disabled
+    ActionBar:
+        size_hint: (1, .1)
+        pos_hint: {'x':.0, 'y':0.9}
+        pos_hint: {'top':1}
+        ActionView:
+            use_separator: True
+            ActionPrevious:
+                title: "Merlin Motion Control"
+                with_previous: False
+                app_icon: 'views/static/images/white_atom.png'
+                app_icon_height: 40
+                app_icon_width: 40
+            ActionOverflow:
+            ActionButton:
+                text: "Info"
+                size_hint_x: None
+                width: 200
+                on_press: root.infowindow()
+            ActionButton:
+                text: "Settings"
+                size_hint_x: None
+                width: 200
+                on_press: root.settingswindow()
+            ActionButton:
+                text: "Test"
+                size_hint_x: None
+                width: 200
+                on_press: root.testwindow()
+
+    GridLayout:
+        size_hint: (1, .9)
+        pos_hint: {'x':.0, 'y':0.0}
+        orientation: 'horizontal'
+        cols: 3
+        rows: 1
+        ActionButtons:
+        Labels:
+        StatusFields:
+
+
+<ActionButtons>:
+    id: buttons
+    rows: 2
+    cols: 1
+    spacing: 10
+    padding: 10
+    FloatLayout:
+        size_hint: (1, .35)
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 10
+            padding: 10
+            size_hint: (1, .5)
+            pos_hint: {'x':.0, 'y':.5}
+            CustomButton:
+                text: "Standby"
+                size_hint_x: None
+                width: 200
+                disabled: root.parent.parent.button_standby_disabled
+                on_press: root.parent.parent.standby()
+    FloatLayout:
+        size_hint: (1, .65)
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: (1, 1)
+            pos_hint: {'x':.0, 'y':.0}
+            spacing: 10
+            padding: 10
+            CustomButton:
+                text: "Move in"
+                size_hint_x: None
+                width: 200
+                disabled: root.parent.parent.button_move_in_disabled
+                on_press: root.parent.parent.move_in()
+            CustomButton:
+                text: "Move out"
+                size_hint_x: None
+                width: 200
+                disabled: root.parent.parent.button_move_out_disabled
+                on_press: root.parent.parent.move_out()
+            CustomButton:
+                text: "Stop"
+                size_hint_x: None
+                width: 200
+                disabled: root.parent.parent.button_stop_disabled
+                on_press: root.parent.parent.stop()
+
+<Labels>:
+    rows: 7
+    cols: 1
+    spacing: 10
+    padding: 0
+    CustomLabel:
+        text: "Connection Status"
+    CustomLabel:
+        text: "Requested State"
+    CustomLabel:
+        text: "Current State"
+    CustomLabel:
+        text: "Gatan In"
+    CustomLabel:
+        text: "Gatan Veto"
+    CustomLabel:
+        text: "Requested Position"
+    CustomLabel:
+        text: "Position"
+
+<StatusFields>:
+    rows: 7
+    cols: 1
+    spacing: 10
+    padding: 0
+    CustomLabel:
+        id: conn_stat
+        text: root.parent.parent.connection_status
+        #background_color = root.parent.parent.
+    CustomLabel:
+        text: root.parent.parent.requested_state
+    CustomLabel:
+        text: root.parent.parent.current_state
+    CustomLabel:
+        text: root.parent.parent.gatan_in_msg
+    CustomLabel:
+        text: root.parent.parent.gatan_veto_msg
+    CustomLabel:
+        text: root.parent.parent.requested_position
+    CustomLabel:
+        text: root.parent.parent.rp
+
