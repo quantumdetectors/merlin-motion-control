@@ -18,18 +18,19 @@ class MotionLink():
     debug = False
     last_debug_pos = 0
     state = 0
-    _connected = False
+    connected = False
     g = gclib.py()
 
     def connect(self):
         try:
             self.g.GOpen('{} --direct -s ALL'.format(self.mer_ip_address))
-            self._connected = True
+            self.g.timeout = 1000
+            self.connected = True
         except gclib.GclibError as e:
-            print('Could not establish a connection, trying again:', e)
-            self._connected = False
+            print('Could not establish a connection:', e)
+            self.connected = False
         except Exception:
-            self._connected = False
+            self.connected = False
         finally:
             self.g.GClose()
 
@@ -40,14 +41,15 @@ class MotionLink():
                 self.g.timeout = 5000
                 val = self.g.GCommand(command)
                 self.g.timeout = 5000
+                self.connected = True
                 return val
             except gclib.GclibError as e:
                 print('Disconnecting device due to unexpected GclibError:', e)
-                self._connected = False
+                self.connected = False
                 return '0'
             except Exception:
                 print('Untreated exception in Galil class. Device disconnected.')
-                self._connected = False
+                self.connected = False
                 return '0'
             finally:
                 self.g.GClose()

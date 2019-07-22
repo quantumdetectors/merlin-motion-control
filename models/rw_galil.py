@@ -6,30 +6,12 @@ import threading
 import time
 from models.ping import ping
 
-g_is_connected = False
-ip_address = '0.0.0.0'
 CLOCK_SPEED = 0.00001
-
-class Thread_A(threading.Thread):
-
-        def __init__(self, name):
-            threading.Thread.__init__(self)
-            self.name = name
-
-        def run(self):
-            global ip_address
-            Clock.schedule_interval(self.attempt_connection, CLOCK_SPEED)
-
-        def attempt_connection(self,chk_ml,*args):
-            global g_is_connected
-            global ip_address
-            g_is_connected = ping(ip_address)
 
 class MotionLinkInterface():
     rp = '0'
     gatan_in = 1
     gatan_veto = 1
-    #is_connected = False
     speed = '0'
     speed_out = '0'
     mer_ip_address = '0.0.0.0'
@@ -39,19 +21,16 @@ class MotionLinkInterface():
     requested_position = '0'
     standby_position = '0'
     current_state = '0'
-    global g_is_connected
-    global ip_address
+    is_connected = False
+    _is_connected = False
 
     def __init__(self):
-        global g_is_connected
-        Clock.schedule_interval(self.poll_connection_status, CLOCK_SPEED)
+        self.poll_connection_thread = threading.Thread(target=self.initialize_poll_connection_thread)
+        self.poll_connection_thread.start()
         self.ml = MotionLink()
-        self.is_connected = g_is_connected
-        self._is_connected = False
 
     def initialize_poll_connection_thread(self):
-        self.threadA = Thread_A("Connection verification")
-        self.threadA.start()
+        self.poll_connection = Clock.schedule_interval(self.poll_connection_status, CLOCK_SPEED)
 
     def initialize_read_thread(self):
         threading.Thread(target=self.thread_function).start()
@@ -63,8 +42,9 @@ class MotionLinkInterface():
         return wrapper
 
     def poll_connection_status(self, *args):
-        global g_is_connected
-        self.is_connected = g_is_connected
+        if not self.is_connected:
+            self.ml.connect()
+        self.is_connected = self.ml.connected
         if self.is_connected:
             self.set_requested_position()
             self.set_standby_position()
@@ -81,10 +61,8 @@ class MotionLinkInterface():
             self.current_state = self.ml.read_merstat()
 
     def update_ml(self):
-        global ip_address
         self.ml.speed = self.speed
         self.ml.speed_out = self.speed_out
-        ip_address = self.mer_ip_address
         self.ml.mer_ip_address = self.mer_ip_address
         self.ml.debug = self.debug
         self.ml.software_version = self.software_version
