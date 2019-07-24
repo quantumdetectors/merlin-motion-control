@@ -17,6 +17,7 @@
             CustomLabel:
                 text: "IP Address"
             ModalTextInput:
+                id: ip
                 focus: False
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
@@ -27,6 +28,7 @@
             CustomLabel:
                 text: "Speed"
             ModalTextInput:
+                id: speed
                 focus: False
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
@@ -37,6 +39,7 @@
             CustomLabel:
                 text: "Speed Out"
             ModalTextInput:
+                id: speed_out
                 focus: False
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
@@ -58,6 +61,7 @@
             CustomLabel:
                 text: "Standby Position"
             ModalTextInput:
+                id: sta_pos
                 focus: False
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
@@ -71,4 +75,3 @@
             pos_hint: {'x':.3, 'y':0.08}
             text: "Update values"
             on_press: root.set_values()
-
