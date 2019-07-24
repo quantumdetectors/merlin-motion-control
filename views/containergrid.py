@@ -94,7 +94,8 @@ class ContainerGrid(FloatLayout):
         self.testWindow = TestWindow(self, ml_interface=self.ml_interface)
         if not self.debug:
             self.ml_interface.initialize_poll_connection_thread()
-        self.ml_interface.initialize_read_thread()
+        self.read_thread = threading.Thread(target=self.ml_interface.initialize_read_thread)
+        self.read_thread.start()
         self.ml_interface.update_ml()
         self.ml_interface.write()
         self.set_requested_position()
