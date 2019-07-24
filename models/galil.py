@@ -114,7 +114,6 @@ class MotionLink():
                     print('g:', command)
             elif command.split('=')[0] == 'req_pos':
                 print('g: Request position set to', command.split('=')[1] )
-                print('req_pos: ', self.requested_position)
             elif command == 'merstat=?':
                 return self.current_state
             elif command.split('=')[0] == 'stdbypos':
