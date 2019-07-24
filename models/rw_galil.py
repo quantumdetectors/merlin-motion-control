@@ -30,10 +30,10 @@ class MotionLinkInterface():
         self.ml = MotionLink()
 
     def initialize_poll_connection_thread(self):
-        self.poll_connection = Clock.schedule_interval(self.poll_connection_status, CLOCK_SPEED)
+        self.poll_connection_clock = Clock.schedule_interval(self.poll_connection_status, CLOCK_SPEED)
 
     def initialize_read_thread(self):
-        threading.Thread(target=self.thread_function).start()
+        self.read_clock = Clock.schedule_interval(self.read, 100*CLOCK_SPEED)
 
     def with_connection(fn):
         def wrapper(self,*args,**kwargs):
@@ -42,7 +42,7 @@ class MotionLinkInterface():
         return wrapper
 
     def poll_connection_status(self, *args):
-        if not self.is_connected:
+        if not self.is_connected and not self.debug:
             self.ml.connect()
         self.is_connected = self.ml.connected
         if self.is_connected:
