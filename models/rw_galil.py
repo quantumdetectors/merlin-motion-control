@@ -4,9 +4,9 @@ from models.galil import MotionLink
 from functools import partial
 import threading
 import time
-from models.ping import ping
 
 CLOCK_SPEED = 0.00001
+
 
 class MotionLinkInterface():
     rp = '0'
