@@ -15,7 +15,7 @@ class MotionLinkInterface():
     speed = '0'
     speed_out = '0'
     mer_ip_address = '0.0.0.0'
-    debug = False
+    debug = bool()
     software_version = '0'
     software_title = '0'
     requested_position = '0'
@@ -25,8 +25,6 @@ class MotionLinkInterface():
     _is_connected = False
 
     def __init__(self):
-        self.poll_connection_thread = threading.Thread(target=self.initialize_poll_connection_thread)
-        self.poll_connection_thread.start()
         self.ml = MotionLink()
 
     def initialize_poll_connection_thread(self):
