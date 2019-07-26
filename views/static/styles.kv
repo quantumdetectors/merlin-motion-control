@@ -36,8 +36,10 @@
     padding: [20,root.height*0.3,0,0]
     spacing:[0, 0, 20, 0]
 
-<ModalTextInput@TextInput>:
+<ModalTextInput@TextInput+FocusBehavior>:
     id: modal
+    write_tab: False
+    text_validate_unfocus: False
     font_size: root.height*0.3
     background_color: .2, .2, .2, 1
     foreground_color: 1, 1, 1, 1
