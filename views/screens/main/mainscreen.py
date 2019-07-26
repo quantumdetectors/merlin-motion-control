@@ -9,7 +9,7 @@ from kivy.uix.label import Label
 from kivy.clock import Clock, mainthread
 from views.modals.settings.settingswindow import SettingsWindow
 from views.modals.info.infowindow import InfoWindow
-from views.testwindow import TestWindow
+from views.modals.test.testwindow import TestWindow
 from views.screens.main.actionbuttons import ActionButtons
 from views.screens.main.statusfields import StatusFields
 from views.screens.main.labels import Labels
