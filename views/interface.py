@@ -3,7 +3,7 @@
 Class reads instructions on the appearance of the app from views/merlinmotioncontrol.kv.
 """
 
-from views.containergrid import ContainerGrid
+from views.screens.main.mainscreen import MainScreen
 from kivy.app import App
 import kivy
 import config
@@ -44,4 +44,4 @@ class MerlinMotionControlApp(App):
 
     def build(self):
         """Return a layout."""
-        return ContainerGrid(settings=config.load_user_settings())
+        return MainScreen(settings=config.load_user_settings())
