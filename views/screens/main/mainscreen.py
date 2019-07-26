@@ -10,9 +10,9 @@ from kivy.clock import Clock, mainthread
 from views.modals.settings.settingswindow import SettingsWindow
 from views.infowindow import InfoWindow
 from views.testwindow import TestWindow
-from views.actionbuttons import ActionButtons
-from views.statusfields import StatusFields
-from views.labels import Labels
+from views.screens.main.actionbuttons import ActionButtons
+from views.screens.main.statusfields import StatusFields
+from views.screens.main.labels import Labels
 from models.rw_galil import MotionLinkInterface
 import threading
 import time
