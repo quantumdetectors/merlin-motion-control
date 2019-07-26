@@ -1,6 +1,7 @@
 <SettingsWindow>:
     size_hint: (None, None)
     size: (400, 440)
+    on_open: speed.focus = True
     FloatLayout:
         size: (400, 440)
         CustomLabel:
@@ -18,7 +19,8 @@
                 text: "IP Address"
             ModalTextInput:
                 id: ip
-                focus: False
+                focus_next: speed
+                focus_previous: sta_pos
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
                     self.cursor=(0,0)
@@ -29,7 +31,8 @@
                 text: "Speed"
             ModalTextInput:
                 id: speed
-                focus: False
+                focus_next: speed_out
+                focus_previous: ip
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
                     self.cursor=(0,0)
@@ -40,7 +43,8 @@
                 text: "Speed Out"
             ModalTextInput:
                 id: speed_out
-                focus: False
+                focus_next: req_pos
+                focus_previous: speed
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
                     self.cursor=(0,0)
@@ -51,7 +55,8 @@
                 text: "Requested Position"
             ModalTextInput:
                 id: req_pos
-                focus: False
+                focus_next: sta_pos
+                focus_previous: speed_out
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
                     self.cursor=(0,0)
@@ -62,7 +67,8 @@
                 text: "Standby Position"
             ModalTextInput:
                 id: sta_pos
-                focus: False
+                focus_next: ip
+                focus_previous: req_pos
                 on_focus:
                     self.border_color=(.5,.5,.5,1)
                     self.cursor=(0,0)

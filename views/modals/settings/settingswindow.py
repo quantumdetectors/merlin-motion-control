@@ -25,6 +25,7 @@ class SettingsWindow(ModalView):
           MotionLink object.
         Deepcopy of MotionLink object to pass onto set_values().
         """
+
         super(SettingsWindow, self).__init__(**kwargs)
         self.software_version = str(ml_object.software_version)
         self.software_title = str(ml_object.software_title)
@@ -41,6 +42,7 @@ class SettingsWindow(ModalView):
         After MotionLink object has been updated, update own values based on
           the current ones of the MotionLink object.
         """
+        
         self.ml.mer_ip_address = self.ip_address
         self.ml.speed = self.speed
         self.ml.speed_out = self.speed_out
