@@ -7,7 +7,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty, ListProperty, AliasProperty, NumericProperty
 from kivy.uix.label import Label
 from kivy.clock import Clock, mainthread
-from views.settingswindow import SettingsWindow
+from views.modals.settings.settingswindow import SettingsWindow
 from views.infowindow import InfoWindow
 from views.testwindow import TestWindow
 from views.actionbuttons import ActionButtons

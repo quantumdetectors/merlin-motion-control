@@ -42,7 +42,7 @@ class SettingsWindow(ModalView):
         After MotionLink object has been updated, update own values based on
           the current ones of the MotionLink object.
         """
-        
+
         self.ml.mer_ip_address = self.ip_address
         self.ml.speed = self.speed
         self.ml.speed_out = self.speed_out
