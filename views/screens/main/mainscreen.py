@@ -8,7 +8,7 @@ from kivy.properties import StringProperty, BooleanProperty, ListProperty, Alias
 from kivy.uix.label import Label
 from kivy.clock import Clock, mainthread
 from views.modals.settings.settingswindow import SettingsWindow
-from views.infowindow import InfoWindow
+from views.modals.info.infowindow import InfoWindow
 from views.testwindow import TestWindow
 from views.screens.main.actionbuttons import ActionButtons
 from views.screens.main.statusfields import StatusFields
