@@ -1,6 +1,6 @@
 # Merlin Motion Control
 
-This is a beta version of the Merlin Motion Control. Interlock and controller for MerlinEM DMC.
+Interlock and controller for MerlinEM DMC.
 
 ## About
 
@@ -65,7 +65,7 @@ The test window can be closed and reopened while the test is running.
         * If Merlin is retracted and the Gatan detector is in: If the 'Move In' button is pressed the Merlin remains retracted.
         * If Merlin is moving and then the Gatan is inserted: The interlock overrides the insertion of the Gatan detector, moves the Merlin out until its current state is 'Retracted', then moves the Gatan detector in.
         * If Merlin is inserted and then the Gatan is inserted: Interlock override Gatan and keeps it out while retracting the Merlin. When Merlin is 'Retracted' the Gatan moves in.
-* Requested Position: 3200 units equals 1 mm. This is the distance to which you want to insert the Merlin relative its retracted position. The default requested positin can be set in the settings.json file. There is a hard limit to the maximum value you can set. If you try and assign a higher value than that of the maximum value the program will automatically override your input.
+* Requested Position: 3200 units equals 1 mm. This is the distance to which you want to insert the Merlin relative its retracted position. The default requested position can be set in the settings.json file. There is a hard limit to the maximum value you can set. If you try and assign a higher value than that of the maximum value the program will automatically override your input.
 * Position: The current position relative the retracted position. 3200 units equals 1 mm.
 
 ## Contributing
