@@ -171,15 +171,25 @@ class MainScreen(FloatLayout):
         """
 
         self.connection_status = 'Connection established' if self.ml_interface.is_connected else ('Debug' if self.debug == True else 'Disconnected')
+
         self.requested_position = self.ml_interface.requested_position
+        self.standby_position = self.ml_interface.standby_position
 
         self.rp = self.ml_interface.rp
 
         if self.requested_position is '':
             self.requested_position = '0'
 
+        if self.standby_position is '':
+            self.standby_position = '0'
+
         if int(self.requested_position) > self.settings["max_position"]:
             self.requested_position = str(self.settings["max_position"])
+            self.set_requested_position()
+
+        if int(self.standby_position) > self.settings["max_position"]:
+            self.standby_position = str(self.settings["max_position"])
+            self.set_standby_position()
 
         if int(self.rp) >= int(self.requested_position) and self.inserted == 0:
             self.inserted = 1
