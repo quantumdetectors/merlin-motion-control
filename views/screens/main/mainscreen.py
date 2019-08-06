@@ -187,6 +187,12 @@ class MainScreen(FloatLayout):
         if self.standby_position is '':
             self.standby_position = '0'
 
+        if self.settingsWindow.requested_position is '':
+            self.settingsWindow.requested_position = '0'
+
+        if self.settingsWindow.standby_position is '':
+            self.settingsWindow.standby_position = '0'
+
         if int(self.requested_position) > self.settings["max_position"]:
             self.requested_position = str(self.settings["max_position"])
             self.set_requested_position()
