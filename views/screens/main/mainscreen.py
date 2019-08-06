@@ -89,7 +89,7 @@ class MainScreen(FloatLayout):
         self.ml_interface.standby_position = self.standby_position
         self.ml_interface.requested_position = self.requested_position
         self.title = self.ml_interface.software_title
-        self.settingsWindow = SettingsWindow(ml_object=self.ml_interface)
+        self.settingsWindow = SettingsWindow(ml_object=self.ml_interface, main_screen = self)
         self.infoWindow = InfoWindow(ml_object=self.ml_interface)
         self.testWindow = TestWindow(self, ml_interface=self.ml_interface)
         if not self.debug:
@@ -127,11 +127,15 @@ class MainScreen(FloatLayout):
 
     @mainthread
     def set_requested_position(self):
+        if int(self.requested_position) > self.settings["max_position"]:
+            self.requested_position = str(self.settings["max_position"])
         self.ml_interface.requested_position = self.requested_position
         self.ml_interface.set_requested_position()
 
     @mainthread
     def set_standby_position(self):
+        if int(self.standby_position) > self.settings["max_position"]:
+            self.standby_position = str(self.settings["max_position"])
         self.ml_interface.standby_position = self.standby_position
         self.ml_interface.set_standby_position()
 
@@ -199,12 +203,19 @@ class MainScreen(FloatLayout):
         self.gatan_in_msg = 'Yes' if self.ml_interface.gatan_in else 'No'
         self.gatan_veto_msg = 'Yes' if self.ml_interface.gatan_veto else 'No'
 
+        if int(self.settingsWindow.requested_position) > self.settings["max_position"]:
+            self.settingsWindow.requested_position = str(self.settings["max_position"])
+
+        if int(self.settingsWindow.standby_position) > self.settings["max_position"]:
+            self.settingsWindow.standby_position = str(self.settings["max_position"])
+
         # Called last
         self._rp = self.rp
 
     def settingswindow(self):
         """Open Settings window."""
         self.settingsWindow.open()
+        self.settingsWindow.update_fields()
 
     def infowindow(self):
         """Open Info window."""

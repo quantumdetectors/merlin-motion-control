@@ -5,6 +5,7 @@ from kivy.properties import StringProperty, BooleanProperty, ListProperty
 from kivy.clock import Clock
 from models.galil import MotionLink
 import copy
+from time import sleep
 
 
 class SettingsWindow(ModalView):
@@ -18,7 +19,7 @@ class SettingsWindow(ModalView):
     standby_position = StringProperty('Def')
     requested_position = StringProperty('Def')
 
-    def __init__(self, ml_object, **kwargs):
+    def __init__(self, ml_object, main_screen, **kwargs):
         """Initialize Settings modal window of main interface.
 
         Pull software version, title, ip address, speed, and speed out from
@@ -32,9 +33,10 @@ class SettingsWindow(ModalView):
         self.ip_address = str(ml_object.mer_ip_address)
         self.speed = str(ml_object.speed)
         self.speed_out = str(ml_object.speed_out)
-        self.ml = ml_object
         self.standby_position = str(ml_object.standby_position)
         self.requested_position = str(ml_object.requested_position)
+        self.ml = ml_object
+        self.main = main_screen
 
     def set_values(self):
         """Update values of MotionLink object when called.
@@ -50,6 +52,15 @@ class SettingsWindow(ModalView):
         self.ml.requested_position = self.requested_position
         self.ml.update_ml()
         self.ml.write()
+        self.ip_address = self.ml.mer_ip_address
+        self.speed = str(self.ml.speed)
+        self.speed_out = str(self.ml.speed_out)
+        self.standby_position = str(self.ml.standby_position)
+        self.requested_position = str(self.ml.requested_position)   
+        self.main.set_requested_position()
+        self.main.set_standby_position()
+
+    def update_fields(self):
         self.ip_address = self.ml.mer_ip_address
         self.speed = str(self.ml.speed)
         self.speed_out = str(self.ml.speed_out)
