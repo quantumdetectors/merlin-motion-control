@@ -48,7 +48,7 @@ def setup_module():
                       extras_require={
                         },
                     package_data={
-                        '': ['*.json', '*.ico', 'dmc/*.dmc', '*.kv'],
+                        '': ['*.json', '*.ico', 'dmc/*.dmc', '*.kv', '.env'],
                         },
                     classifiers=[
                             # How mature is this project? Common values are
