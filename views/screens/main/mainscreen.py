@@ -38,7 +38,8 @@ class MainScreen(FloatLayout):
     state = NumericProperty(0)
     interlocked = 0
     inserted = 0
-    debug = True
+    # Seems it was forced into debug mode
+    debug = False
     ml_interface = MotionLinkInterface()
 
     def disable_window(self):
