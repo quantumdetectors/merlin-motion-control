@@ -1,6 +1,7 @@
 import platform    # For getting the operating system name
 import subprocess  # For executing a shell command
 import os
+
 def ping(host):
     """
     Returns True if host (str) responds to a ping request.

@@ -1,2 +1,6 @@
 *pycache*
 *.DS_*
+build
+dist
+*.egg-info
+.eggs

@@ -1,6 +1,6 @@
 """ """
 from kivy.clock import Clock, mainthread
-from models.galil import MotionLink
+from .galil import MotionLink
 from functools import partial
 import threading
 import time

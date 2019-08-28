@@ -1,26 +1,26 @@
 """Class called directly by Merlin_Motion_Control.py for launching the app.
 
-Class reads instructions on the appearance of the app from views/merlinmotioncontrol.kv.
+Class reads instructions on the appearance of the app from .views/merlinmotioncontrol.kv.
 """
 
-from views.screens.main.mainscreen import MainScreen
+from .screens.main.mainscreen import MainScreen
 from kivy.app import App
 import kivy
-import config
+from .. import config
 
 # Separate kv files
 from kivy.lang import Builder
-from views.modals.settings import settingswindow
-#from views.modals.settings.settingswindow import SettingsWindow
-from views.modals.info import infowindow
-from views.modals.test import testwindow
-#from views.modals.info.infowindow import InfoWindow
-#from views.screens.main.mainscreen import MainScreen
-#from views.screens.main.actionbuttons import ActionButtons
-#from views.screens.main.labels import Labels
-#from views.screens.main.statusfields import StatusFields
-from views.screens.main import mainscreen
-from views.static import styles
+from .modals.settings import settingswindow
+#from .modals.settings.settingswindow import SettingsWindow
+from .modals.info import infowindow
+from .modals.test import testwindow
+#from .modals.info.infowindow import InfoWindow
+#from .screens.main.mainscreen import MainScreen
+#from .screens.main.actionbuttons import ActionButtons
+#from .screens.main.labels import Labels
+#from .screens.main.statusfields import StatusFields
+from .screens.main import mainscreen
+from .static import styles
 
 kivy.require("1.11.1")
 

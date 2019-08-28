@@ -4,7 +4,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.modalview import ModalView
 from kivy.properties import StringProperty, BooleanProperty, ListProperty, ObjectProperty
 from kivy.clock import Clock, mainthread
-from models.rw_galil import MotionLinkInterface
+from ....models.rw_galil import MotionLinkInterface
 import copy
 from time import sleep
 import datetime

@@ -7,13 +7,13 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty, ListProperty, AliasProperty, NumericProperty
 from kivy.uix.label import Label
 from kivy.clock import Clock, mainthread
-from views.modals.settings.settingswindow import SettingsWindow
-from views.modals.info.infowindow import InfoWindow
-from views.modals.test.testwindow import TestWindow
-from views.screens.main.actionbuttons import ActionButtons
-from views.screens.main.statusfields import StatusFields
-from views.screens.main.labels import Labels
-from models.rw_galil import MotionLinkInterface
+from ...modals.settings.settingswindow import SettingsWindow
+from ...modals.info.infowindow import InfoWindow
+from ...modals.test.testwindow import TestWindow
+from .actionbuttons import ActionButtons
+from .statusfields import StatusFields
+from .labels import Labels
+from ....models.rw_galil import MotionLinkInterface
 import threading
 import time
 import os
@@ -76,6 +76,7 @@ class MainScreen(FloatLayout):
         Clock.schedule_interval(self.update_status_fields, 100*CLOCK_SPEED)
         self.settings = settings
         self.ml_interface.debug = self.debug
+        print(self.settings)
         self.ml_interface.mer_ip_address = self.settings["ip_address"]
         self.ml_interface.software_version = str(self.settings["software_version"])
         self.ml_interface.software_title = self.settings["title"]

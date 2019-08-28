@@ -1,6 +1,5 @@
-from models.verify_ip import is_valid_ipv4_address
+from .verify_ip import is_valid_ipv4_address
 import os
-
 
 def import_check(settings):
     if isinstance(settings,dict):

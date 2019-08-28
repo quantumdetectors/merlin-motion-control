@@ -2,9 +2,9 @@
 """Config file for validating .env variables and putting them into objects."""
 import os
 import json
-from models.verify_ip import is_valid_ipv4_address
-from models import verify_env
-from models import verify_settings
+from .models.verify_ip import is_valid_ipv4_address
+from .models import verify_env
+from .models import verify_settings
 
 
 def software_version():

@@ -3,7 +3,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.modalview import ModalView
 from kivy.properties import StringProperty, BooleanProperty, ListProperty
 from kivy.clock import Clock
-from models.galil import MotionLink
+from ....models.galil import MotionLink
 import copy
 from time import sleep
 

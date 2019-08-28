@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from models.verify_ip import is_valid_ipv4_address
+from .verify_ip import is_valid_ipv4_address
 import gclib
 import random
 
