@@ -10,13 +10,12 @@ def main():
   try:
     print('gclib version:', g.GVersion())
 
-    g.GOpen('192.168.0.155 --direct -s ALL')
+    g.GOpen('192.168.0.154 --direct -s ALL')
     print(g.GInfo())
     g.timeout = 300000
 
     with open('dmc/merlin.dmc') as prog:
         lines = prog.read()
-        #program = lines.replace("\n", ";")
         out = []
         for l in lines.split('\n'):
             l = l.rstrip()
@@ -26,7 +25,7 @@ def main():
                 out.append(l + ';\r')
 
     #out.append('\\\r')
-    print out
+    print(out)
     # exit()
 
     g.GProgramDownload(''.join(out), '')
@@ -35,7 +34,7 @@ def main():
     g.GCommand('BP')
     g.GSleep(20)
 
-    print g.GMessage()
+    print(g.GMessage())
 
     #g.GCommand('BP') #burn program
     #g.GSleep(10)

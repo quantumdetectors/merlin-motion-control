@@ -72,12 +72,10 @@ class MotionLinkInterface():
 
     @with_connection
     def set_requested_position(self):
-        print('rw, req_pos:', self.requested_position)
         self.ml.set_requested_position(self.requested_position)
 
     @with_connection
     def set_standby_position(self):
-        print('rw, stdby_pos:', self.standby_position)
         self.ml.set_standby_position(self.standby_position)
 
     @with_connection
