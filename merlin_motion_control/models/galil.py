@@ -2,6 +2,7 @@
 """
 Galil Motion Control Interface
 """
+from typing import Optional
 import logging
 log = logging.getLogger(__name__)
 
@@ -14,24 +15,40 @@ class MotionLink(object):
     """
 
     def __init__(self):
-        self.software_version = ''
-        self.software_title = ''
-        self.ip_address = ''
-        self.mer_ip_address = ''
-        self.speed = ''
-        self.speed_out = ''
-        self.merspeed = '20000'
-        self.merspeec = '20000'
-        self.requested_position = ''
-        self.standby_position = ''
-        self.current_state = ''
-        self.debug = False
-        self.last_debug_pos = 0
-        self.state = 0
-        self.connected = False
+        self.software_version: str = ''  
+        self.software_title: str = ''
+        self.ip_address: str = ''
+        self.mer_ip_address: str = ''
+        self.speed: str = ''
+        self.speed_out: str = ''
+        self._debug: bool = False
+        self.connected: bool = False
         self.g = gclib.py()
 
-    def connect(self):
+    @property
+    def debug(self) -> bool:
+        """
+        Whether the MotionLink is running in debug (i.e. emulator) mode.
+        """
+        return self._debug
+
+    @debug.setter
+    def debug(self, value: bool) -> None:
+        self._debug = bool(value)
+        # Dynamically add in debugging attributes so they don't clutter the namespace
+        # if unused.
+        if self._debug is True:
+            self._d_requested_pos = ''
+            self._d_standby_pos = ''
+            self._d_current_state = ''
+
+            self._d_merspeed = '20000'
+            self._d_merspeec = '20000'
+            self._d_last_pos = 0
+            self._d_state = 0
+
+
+    def connect(self) -> None:
         try:
             self.g.GOpen('{} --direct -s ALL'.format(self.mer_ip_address))
             self.g.timeout = 1000
@@ -44,152 +61,148 @@ class MotionLink(object):
         finally:
             self.g.GClose()
 
-    def _execute(self,command):
-        if not self.debug:
-            try:
-                self.g.GOpen(f'{self.mer_ip_address} --direct -s ALL')
-                self.g.timeout = 5000
-                val = self.g.GCommand(command)
-                self.g.timeout = 5000
-                self.connected = True
-                return val
-            except gclib.GclibError as e:
-                log.info(f'Disconnecting device due to unexpected GclibError: {e}')
-                self.connected = False
-                return '0'
-            except Exception:
-                log.info('Unhandled exception in Galil class. Device disconnected.')
-                self.connected = False
-                return '0'
-            finally:
-                self.g.GClose()
-        else:
-            # Move in
-            if command == 'merin=1':
-                self.state = 1
-            elif command == 'merin=2':
-                self.state = 2
-            elif command == 'merin=0':
-                self.state = 0
-            elif command == 'merin=3':
-                self.state = 3
-            elif command == 'RP':
-                if self.state == 1:
-                    if int(float(self.requested_position)) > int(float(self.last_debug_pos)):
-                        self.current_state = 2
-                        debug_pos = self.last_debug_pos+722
-                        self.last_debug_pos = debug_pos
-                    else:
-                        self.current_state = 1
-                        debug_pos = self.last_debug_pos
-                    return str(debug_pos)
-                elif self.state == 2:
-                    self.current_state = 3
-                    return str(self.last_debug_pos)
-                elif self.state == 0:
-                    if self.last_debug_pos==0:
-                        self.current_state = 0
-                        return '0'
-                    else:
-                        self.current_state = 2
-                        debug_pos = self.last_debug_pos-722
-                        self.last_debug_pos = debug_pos
-                        return str(debug_pos)
-                elif self.state == 3:
-                    if int(float(self.standby_position)) > int(float(self.last_debug_pos)):
-                        self.current_state = 2
-                        debug_pos = self.last_debug_pos+722
-                        self.last_debug_pos = debug_pos
-                    else:
-                        self.current_state = 4
-                        debug_pos = self.last_debug_pos
-                    return str(debug_pos)
-            elif command == 'MG @IN[1]':
-                return random.randint(0,1)
-            elif command == 'MG @OUT[1]':
-                return random.randint(0,1)
-            elif command.split('=')[0] == 'merspeed':
-                cmd = command.split('=')
-                if cmd[1] == '?':
-                    return str(self.merspeed)
-                else:
-                    self.merspeed = cmd[1]
-                    log.info(f'g: {command}')
-            elif command.split('=')[0] == 'merspeec':
-                cmd = command.split('=')
-                if cmd[1] == '?':
-                    return str(self.merspeec)
-                else:
-                    self.merspeec = cmd[1]
-                    log.info(f'g: {command}')
-            elif command.split('=')[0] == 'req_pos':
-                log.info(f'g: Request position set to {command.split("=")[1]}')
-            elif command == 'merstat=?':
-                return self.current_state
-            elif command.split('=')[0] == 'stdbypos':
-                log.info(f'g: Standby position set to {command.split("=")[1]}')
+
+    def _execute(self, command: str) -> Optional[str]:
+        if self.debug:
+            self._execute_debug(command)
+            return
+        
+        try:
+            self.g.GOpen(f'{self.mer_ip_address} --direct -s ALL')
+            self.g.timeout = 5000
+            val = self.g.GCommand(command)
+            self.g.timeout = 5000
+            self.connected = True
+            return val
+        except gclib.GclibError as e:
+            log.info(f'Disconnecting device due to unexpected GclibError: {e}')
+            self.connected = False
+            return '0'
+        except:
+            log.info('Unhandled exception in Galil class. Device disconnected.')
+            self.connected = False
+            return '0'
+        finally:
+            self.g.GClose()
 
 
-    def move(self, cmd):
-        val = self._execute('merin={}'.format(cmd))
+    def _execute_debug(self, command: str) -> Optional[str]:
+        """
+        As per `MotionLink._execute` but when run in emulator mode.
+        """
+        if command == 'merin=1': # Move in
+            self._d_state = 1
+        elif command == 'merin=2': # Stop
+            self._d_state = 2
+        elif command == 'merin=0': # Move out
+            self._d_state = 0
+        elif command == 'merin=3': # Standy
+            self._d_state = 3
+        elif command == 'RP':
+            if self._d_state == 1:
+                if int(float(self._d_requested_pos)) > int(float(self._d_last_pos)):
+                    self._d_current_state = 2
+                    debug_pos = self._d_last_pos+722
+                    self._d_last_pos = debug_pos
+                else:
+                    self._d_current_state = 1
+                    debug_pos = self._d_last_pos
+                return str(debug_pos)
+            elif self._d_state == 2:
+                self._d_current_state = 3
+                return str(self._d_last_pos)
+            elif self._d_state == 0:
+                if self._d_last_pos==0:
+                    self._d_current_state = 0
+                    return '0'
+                else:
+                    self._d_current_state = 2
+                    debug_pos = self._d_last_pos-722
+                    self._d_last_pos = debug_pos
+                    return str(debug_pos)
+            elif self._d_state == 3:
+                if int(float(self._d_standby_pos)) > int(float(self._d_last_pos)):
+                    self._d_current_state = 2
+                    debug_pos = self._d_last_pos+722
+                    self._d_last_pos = debug_pos
+                else:
+                    self._d_current_state = 4
+                    debug_pos = self._d_last_pos
+                return str(debug_pos)
+        elif command == 'MG @IN[1]':
+            return random.randint(0,1)
+        elif command == 'MG @OUT[1]':
+            return random.randint(0,1)
+        elif command.split('=')[0] == 'merspeed':
+            cmd = command.split('=')
+            if cmd[1] == '?':
+                return str(self._d_merspeed)
+            else:
+                self._d_merspeed = cmd[1]
+                log.info(f'g: {command}')
+        elif command.split('=')[0] == 'merspeec':
+            cmd = command.split('=')
+            if cmd[1] == '?':
+                return str(self._d_merspeec)
+            else:
+                self._d_merspeec = cmd[1]
+                log.info(f'g: {command}')
+        elif command.split('=')[0] == 'req_pos':
+            log.info(f'g: Request position set to {command.split("=")[1]}')
+        elif command == 'merstat=?':
+            return self._d_current_state
+        elif command.split('=')[0] == 'stdbypos':
+            log.info(f'g: Standby position set to {command.split("=")[1]}')
+        # TODO: should have a default return?
+
+
+    def move(self, cmd) -> str:
+        val = self._execute(f'merin={cmd}')
         return val
 
-    def stop(self):
+    def stop(self) -> str:
         val = self._execute('merin=2')
         return val
 
-    def standby(self):
+    def standby(self) -> str:
         val = self._execute('merin=3')
         return val
 
-    def read_rp(self):
+    def read_rp(self) -> str:
         val = self._execute('RP')
         return val
 
-    def read_merstat(self):
+    def read_merstat(self) -> str:
         val = self._execute('merstat=?')
         return val
 
-    def set_requested_position(self,cmd):
-        if self.debug:
-            self.requested_position = cmd
-        val = self._execute('req_pos={}'.format(cmd))
+    def set_requested_position(self, cmd: str) -> str:
+        val = self._execute(f'req_pos={cmd}')
         return val
 
-    def set_standby_position(self,cmd):
-        if self.debug:
-            self.standby_position = cmd
-        val = self._execute('stdbypos={}'.format(cmd))
+    def set_standby_position(self, cmd: str) -> str:
+        val = self._execute(f'stdbypos={cmd}')
         return val
 
-    def get_gatan_in(self):
-        if self.debug:
-            return 0
-            #if self._execute('MG @IN[1]') == 1:
-            #    return 0
-            #else:
-            #    return 1
+    def get_gatan_in(self) -> int:
         return 0 if float(self._execute('MG @IN[1]')) else 1
 
-    def get_gatan_veto(self):
-        if self.debug:
-            return 0
-            #return self._execute('MG @OUT[1]')
+    def get_gatan_veto(self) -> int:
         return int(float(self._execute('MG @OUT[1]')))
 
-    def set_speed(self, speed):
-        self._execute('merspeed={speed}'.format(speed=speed))
+    def set_speed(self, speed: int) -> None:
+        self._execute(f'merspeed={speed}')
 
-    def set_speed_out(self, speed_out):
-        self._execute('merspeec={speed_out}'.format(speed_out=speed_out))
+    def set_speed_out(self, speed_out: int) -> None:
+        self._execute(f'merspeec={speed_out}')
 
-    def get_speed(self):
+    def get_speed(self) -> str:
         return str(int(float(self._execute('merspeed=?'))))
 
-    def get_speed_out(self):
+    def get_speed_out(self) -> str:
         return str(int(float(self._execute('merspeec=?'))))
 
-    def set_values(self):
+    def validate_values(self) -> None:
         if self.speed.isdigit() and (int(self.speed) > 40000 or int(self.speed) < 1):
             log.info('Speed must be an integer between 1 and 40000')
             self.speed = self.get_speed()
@@ -206,3 +219,5 @@ class MotionLink(object):
         else:
             log.info(f'Invalid IPv4 address: {self.ip_address}')
             self.ip_address = self.mer_ip_address
+
+

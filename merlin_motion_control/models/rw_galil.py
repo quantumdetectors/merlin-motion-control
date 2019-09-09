@@ -68,7 +68,7 @@ class MotionLinkInterface():
 
     @with_connection
     def write(self):
-        self.ml.set_values()
+        self.ml.validate_values()
 
     @with_connection
     def set_requested_position(self):
