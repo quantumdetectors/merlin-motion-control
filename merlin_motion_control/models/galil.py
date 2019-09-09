@@ -37,7 +37,7 @@ class MotionLink(object):
             self.g.timeout = 1000
             self.connected = True
         except gclib.GclibError as e:
-            print('Could not establish a connection:', e)
+            log.info(f'Could not establish a connection: {e}')
             self.connected = False
         except Exception:
             self.connected = False
@@ -47,18 +47,18 @@ class MotionLink(object):
     def _execute(self,command):
         if not self.debug:
             try:
-                self.g.GOpen('{} --direct -s ALL'.format(self.mer_ip_address))
+                self.g.GOpen(f'{self.mer_ip_address} --direct -s ALL')
                 self.g.timeout = 5000
                 val = self.g.GCommand(command)
                 self.g.timeout = 5000
                 self.connected = True
                 return val
             except gclib.GclibError as e:
-                print('Disconnecting device due to unexpected GclibError:', e)
+                log.info(f'Disconnecting device due to unexpected GclibError: {e}')
                 self.connected = False
                 return '0'
             except Exception:
-                print('Untreated exception in Galil class. Device disconnected.')
+                log.info('Unhandled exception in Galil class. Device disconnected.')
                 self.connected = False
                 return '0'
             finally:
@@ -114,20 +114,20 @@ class MotionLink(object):
                     return str(self.merspeed)
                 else:
                     self.merspeed = cmd[1]
-                    print('g:', command)
+                    log.info(f'g: {command}')
             elif command.split('=')[0] == 'merspeec':
                 cmd = command.split('=')
                 if cmd[1] == '?':
                     return str(self.merspeec)
                 else:
                     self.merspeec = cmd[1]
-                    print('g:', command)
+                    log.info(f'g: {command}')
             elif command.split('=')[0] == 'req_pos':
-                print('g: Request position set to', command.split('=')[1] )
+                log.info(f'g: Request position set to {command.split("=")[1]}')
             elif command == 'merstat=?':
                 return self.current_state
             elif command.split('=')[0] == 'stdbypos':
-                print('g: Standby position set to', command.split('=')[1] )
+                log.info(f'g: Standby position set to {command.split("=")[1]}')
 
 
     def move(self, cmd):
@@ -191,19 +191,18 @@ class MotionLink(object):
 
     def set_values(self):
         if self.speed.isdigit() and (int(self.speed) > 40000 or int(self.speed) < 1):
-            print('Speed must be an integer between 1 and 40000')
+            log.info('Speed must be an integer between 1 and 40000')
             self.speed = self.get_speed()
         else:
             self.set_speed(self.speed)
         if self.speed_out.isdigit() and (int(self.speed_out) > 40000 or int(self.speed_out) < 1):
-            print('Speed Out must be an integer between 1 and 40000')
+            log.info('Speed Out must be an integer between 1 and 40000')
             self.speed_out = self.get_speed_out()
         else:
             self.set_speed_out(self.speed_out)
         if is_valid_ipv4_address(self.ip_address):
-            print('IP address:',self.ip_address)
+            log.info(f'IP address: {self.ip_address} is valid.')
             self.mer_ip_address = self.ip_address
         else:
-            #print("Invalid IP address.", self.ip_address, "is not a valid IPv4 address.")
+            log.info(f'Invalid IPv4 address: {self.ip_address}')
             self.ip_address = self.mer_ip_address
-            #print(self.mer_ip_address)
