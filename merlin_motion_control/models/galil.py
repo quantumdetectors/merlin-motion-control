@@ -1,25 +1,35 @@
-#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Galil Motion Control Interface
+"""
+import logging
+log = logging.getLogger(__name__)
+
 from .verify_ip import is_valid_ipv4_address
 import gclib
 import random
 
-class MotionLink():
-    software_version = ''
-    software_title = ''
-    ip_address = ''
-    mer_ip_address = ''
-    speed = ''
-    speed_out = ''
-    merspeed = '20000'
-    merspeec = '20000'
-    requested_position = ''
-    standby_position = ''
-    current_state = ''
-    debug = False
-    last_debug_pos = 0
-    state = 0
-    connected = False
-    g = gclib.py()
+class MotionLink(object):
+    """
+    """
+
+    def __init__(self):
+        self.software_version = ''
+        self.software_title = ''
+        self.ip_address = ''
+        self.mer_ip_address = ''
+        self.speed = ''
+        self.speed_out = ''
+        self.merspeed = '20000'
+        self.merspeec = '20000'
+        self.requested_position = ''
+        self.standby_position = ''
+        self.current_state = ''
+        self.debug = False
+        self.last_debug_pos = 0
+        self.state = 0
+        self.connected = False
+        self.g = gclib.py()
 
     def connect(self):
         try:
