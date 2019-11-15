@@ -10,7 +10,7 @@ def main():
   try:
     print('gclib version:', g.GVersion())
 
-    g.GOpen('192.168.0.154 --direct -s ALL')
+    g.GOpen('192.168.0.157 --direct -s ALL')
     print(g.GInfo())
     g.timeout = 300000
 

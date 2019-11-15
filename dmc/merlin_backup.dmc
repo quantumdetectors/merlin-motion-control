@@ -13,6 +13,8 @@ lmerin=0
 merstat=0
 meroff=0
 decel=2000000
+req_pos=0
+stdbypos=0
 
 IF (_LRX=0)
 	MG "Moving off limit"
@@ -33,24 +35,32 @@ IF (merin <> lmerin)
 	lmerin=merin
 	'MG "Mer changed"
 	'MG merin
-	IF (merin=2)
+	IF (merin=1)
 		IF ((@IN[1]=0)
 			OB1, 1
 			merin=0
 		ELSE
-			JS #STP
+			JS #MOIN
 		ENDIF
 	ELSE
-		IF (merin=1)
-			merconn=0
+		IF (merin=2)
 			IF ((@IN[1]=0)
 				OB1, 1
 				merin=0
 			ELSE
-				JS #MOIN
+				JS #STP
 			ENDIF
 		ELSE
-			JS #HOME
+			IF (merin=3)
+				IF ((@IN[1]=0)
+					OB1, 1
+					merin=0
+				ELSE
+					JS #STDBY
+				ENDIF
+			ELSE
+				JS #HOME
+			ENDIF
 		ENDIF
 	ENDIF
 
@@ -69,7 +79,7 @@ IF (merin <> 2)
 ENDIF
 JP#Q, _LRX = 0, _LFX = 0
 MO
-merstat=1
+merstat=3
 'MG "Stopped"
 EN
 
@@ -115,35 +125,41 @@ merstat=2
 SH
 DCX=decel
 JGX=merspeed
+PA req_pos
 BGX
-#N
+'MF req_pos
+#A
 IF (merin <> 1)
 	STX
 	AMX
 	JS #LOOP
 ENDIF
-JP#N, _LFX = 1
-STX
+JP#A, _BGX = 1
 AMX
-DCX=67107840
-JGX=-500
-BGX
-#O
-IF (merin <> 1)
-	DCX=decel
-	STX
-	AMX
-	JS #LOOP
-ENDIF
-JP#O, _LFX = 0
-STX
-AMX
-PR -1*@ABS[meroff]
-BGX
-AMX
-MO
 merstat=1
-MG "Moved"
+'MG "Moved"
+MO
+EN
+
+#STDBY
+'MG "Going to standby"
+merstat=2
+SH
+DCX=decel
+JGX=merspeed
+PA stdbypos
+BGX
+#AA
+IF (merin <> 3)
+	STX
+	AMX
+	JS #LOOP
+ENDIF
+JP#AA, _BGX = 1
+AMX
+merstat=4
+'MG "In Standby"
+MO
 EN
 
 #ININT
@@ -189,6 +205,12 @@ IF ((@IN[1]=0)&(_RPA>10))
 			STX
 			AMX
 			merin=0
+		ELSE
+			IF (merin=3)
+				STX
+				AMX
+				merin=0
+			ENDIF
 		ENDIF
 	ENDIF
 ELSE
@@ -198,7 +220,3 @@ ELSE
 	OB1, 0
 ENDIF
 EN
-
-#COMINT
-'MG "Communication interrupted"
-JS #HOME
