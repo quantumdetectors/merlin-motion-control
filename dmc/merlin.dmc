@@ -1,5 +1,5 @@
 #AUTO
-OB1, 1
+OB1, 0
 
 AG0
 YA 16
@@ -37,7 +37,7 @@ IF (merin <> lmerin)
 	'MG merin
 	IF (merin=1)
 		IF ((@IN[1]=0)
-			OB1, 1
+			OB1, 0
 			merin=0
 		ELSE
 			JS #MOIN
@@ -45,7 +45,7 @@ IF (merin <> lmerin)
 	ELSE
 		IF (merin=2)
 			IF ((@IN[1]=0)
-				OB1, 1
+				OB1, 0
 				merin=0
 			ELSE
 				JS #STP
@@ -53,7 +53,7 @@ IF (merin <> lmerin)
 		ELSE
 			IF (merin=3)
 				IF ((@IN[1]=0)
-					OB1, 1
+					OB1, 0
 					merin=0
 				ELSE
 					JS #STDBY
@@ -195,7 +195,7 @@ EN
 
 #SETOP
 IF ((@IN[1]=0)&(_RPA>10))
-	OB1, 1
+	OB1, 0
 	IF (merin=1)
 		STX
 		AMX
@@ -217,6 +217,6 @@ ELSE
 	IF ((merin=0)&(merstat=2))
 		WT2000
 	ENDIF
-	OB1, 0
+	OB1, 1
 ENDIF
 EN

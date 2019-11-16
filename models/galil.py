@@ -165,7 +165,7 @@ class MotionLink():
         if self.debug:
             return 0
             #return self._execute('MG @OUT[1]')
-        return int(float(self._execute('MG @OUT[1]')))
+        return 0 if int(float(self._execute('MG @OUT[1]'))) else 1
 
     def set_speed(self, speed):
         self._execute('merspeed={speed}'.format(speed=speed))
