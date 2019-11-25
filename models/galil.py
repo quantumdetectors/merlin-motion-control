@@ -159,8 +159,7 @@ class MotionLink():
             #    return 0
             #else:
             #    return 1
-        IN = 0 if float(self._execute('MG @IN[1]')) else 1
-        return IN
+        return 0 if float(self._execute('MG @IN[1]')) else 1
 
     def get_gatan_on(self):
         if self.debug:
@@ -169,8 +168,7 @@ class MotionLink():
             #    return 0
             #else:
             #    return 1
-        AN = 1 if float(self._execute('MG @AN[1]')) > 0.9 else 0
-        return AN
+        return 1 if float(self._execute('MG @IN[2]')) else 0
 
     def get_gatan_veto(self):
         if self.debug:

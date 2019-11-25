@@ -40,7 +40,7 @@ IF (merin <> lmerin)
 	'MG "Mer changed"
 	'MG merin
 	IF (merin=1)
-		IF ((@IN[1]=0)
+		IF ((@IN[1]=0)|(@IN[2]=0))
 			OB1, unsafe
 			merin=0
 		ELSE
@@ -48,7 +48,7 @@ IF (merin <> lmerin)
 		ENDIF
 	ELSE
 		IF (merin=2)
-			IF ((@IN[1]=0)
+			IF ((@IN[1]=0)|(@IN[2]=0))
 				OB1, unsafe
 				merin=0
 			ELSE
@@ -56,7 +56,7 @@ IF (merin <> lmerin)
 			ENDIF
 		ELSE
 			IF (merin=3)
-				IF ((@IN[1]=0)
+				IF ((@IN[1]=0)|(@IN[2]=0))
 					OB1, unsafe
 					merin=0
 				ELSE
@@ -67,7 +67,6 @@ IF (merin <> lmerin)
 			ENDIF
 		ENDIF
 	ENDIF
-
 	JS#SETOP
 ENDIF
 WT1000
@@ -171,13 +170,13 @@ EN
 WT10
 JS#SETOP
 
-IF @IN[1]=1
+IF ((@IN[1]=1)&(@IN[2]=1))
 	trigger=0
 ELSE
 	trigger=1
 ENDIF
 ZS
-II1,,,trigger
+II1,2,,trigger
 IF ((merin=0)&(merstat=2))
 	JS#HOME
 	lmerin=0
@@ -189,16 +188,16 @@ RI0
 
 #PNEU
 JS#SETOP
-IF @IN[1]=1
+IF ((@IN[1]=1)&(@IN[2]=1))
 	trigger=0
 ELSE
 	trigger=1
 ENDIF
-II1,,,trigger
+II1,2,,trigger
 EN
 
 #SETOP
-IF ((@IN[1]=0)&(_RPA>10))
+IF (((@IN[1]=0)|(@IN[2]=0))&(_RPA>10))
 	OB1, unsafe
 	IF (merin=1)
 		STX
