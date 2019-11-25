@@ -95,7 +95,7 @@
                 on_press: root.parent.parent.stop()
 
 <Labels>:
-    rows: 7
+    rows: 8
     cols: 1
     spacing: 10
     padding: 0
@@ -106,16 +106,18 @@
     CustomLabel:
         text: "Current State"
     CustomLabel:
-        text: "Gatan In"
+        text: "CETA In"
     CustomLabel:
-        text: "Gatan Veto"
+        text: "CETA On"
+    CustomLabel:
+        text: "CETA Veto"
     CustomLabel:
         text: "Requested Position"
     CustomLabel:
         text: "Position"
 
 <StatusFields>:
-    rows: 7
+    rows: 8
     cols: 1
     spacing: 10
     padding: 0
@@ -129,6 +131,8 @@
         text: root.parent.parent.current_state
     CustomLabel:
         text: root.parent.parent.gatan_in_msg
+    CustomLabel:
+        text: root.parent.parent.gatan_on_msg
     CustomLabel:
         text: root.parent.parent.gatan_veto_msg
     CustomLabel:

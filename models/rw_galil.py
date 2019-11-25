@@ -11,6 +11,7 @@ CLOCK_SPEED = 0.00001
 class MotionLinkInterface():
     rp = '0'
     gatan_in = 1
+    gatan_on = 1
     gatan_veto = 1
     speed = '0'
     speed_out = '0'
@@ -55,6 +56,7 @@ class MotionLinkInterface():
         if self.is_connected or self.debug:
             self.rp = self.ml.read_rp()
             self.gatan_in = self.ml.get_gatan_in()
+            self.gatan_on = self.ml.get_gatan_on()
             self.gatan_veto = self.ml.get_gatan_veto()
             self.current_state = self.ml.read_merstat()
 

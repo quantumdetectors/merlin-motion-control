@@ -30,8 +30,10 @@ class MainScreen(FloatLayout):
     current_state = StringProperty('Default')
     requested_state = StringProperty('Default')
     gatan_in = StringProperty('Default')
+    gatan_on = StringProperty('Default')
     gatan_veto = StringProperty('Default')
     gatan_in_msg = StringProperty('Default')
+    gatan_on_msg = StringProperty('Default')
     gatan_veto_msg = StringProperty('Default')
     _is_connected = BooleanProperty('False')
     connection_status = StringProperty('Disconnected')
@@ -207,6 +209,7 @@ class MainScreen(FloatLayout):
         state = int(float(self.ml_interface.current_state))
         self.current_state = 'Standby' if state == 4 else ('Stopped'if state == 3 else ('Moving' if state == 2 else ('Inserted' if state == 1 else 'Retracted')))
         self.gatan_in_msg = 'Yes' if self.ml_interface.gatan_in else 'No'
+        self.gatan_on_msg = 'Yes' if self.ml_interface.gatan_on else 'No'
         self.gatan_veto_msg = 'Yes' if self.ml_interface.gatan_veto else 'No'
 
         if int(self.settingsWindow.requested_position) > self.settings["max_position"]:
