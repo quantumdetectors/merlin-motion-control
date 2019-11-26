@@ -155,39 +155,17 @@ class MotionLink():
     def get_gatan_in(self):
         if self.debug:
             return 0
-            #if self._execute('MG @IN[1]') == 1:
-            #    return 0
-            #else:
-            #    return 1
-        merstat = self._execute('merstat=?')
-        merst = self._execute('merin=?')
-        merstl = self._execute('lmerin=?')
-        trig = self._execute('trigger=?')
-        in_state = self._execute('MG @IN[1]')
-        on_state = self._execute('MG @IN[2]')
-        print('---------')
-        print('in',merst)
-        print('lin',merstl)
-        print('stat:',merstat)
-        print('trig:',trig)
-        print('in_state:',in_state)
-        print('on_state:',on_state)
         return 0 if float(self._execute('MG @IN[1]')) else 1
 
     def get_gatan_on(self):
         if self.debug:
             return 0
-            #if self._execute('MG @IN[1]') == 1:
-            #    return 0
-            #else:
-            #    return 1
         on_state = self._execute('MG @IN[2]')
         return 1 if float(on_state) else 0
 
     def get_gatan_veto(self):
         if self.debug:
             return 0
-            #return self._execute('MG @OUT[1]')
         return int(float(self._execute('MG @OUT[1]')))
 
     def set_speed(self, speed):
