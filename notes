@@ -1,0 +1,24 @@
+IN1 = 1 => Out: CETA In No
+IN1 = 0 => In: CETA In Yes
+AN1 = 1 => On: CETA On Yes
+AN1 = 0 => Off: CETA On No
+
+IF AN1 = 1 and IN1 1: Gatan Veto No
+IF AN1 = 1 and IN1 0: Gatan Veto Yes
+IF AN1 = 0 and IN1 1: Gatan Veto  Yes
+IF AN1 = 0 and IN1 0: Gatan Veto  Yes
+
+AN1 > 0.9 <=> AN1 = 1
+AN1 < 0.9 <=> AN1 = 0
+
+ININT (Input Interrupt):
+IF (IN1=1 and AN=1)
+    trigger=0
+
+PNEU (Set Output and trigger):
+IF (IN1=1 and AN=1)
+    trigger=0
+
+SETOP (Set Output == Veto):
+IF (IN1=0 or AN1=0) and _RPA>10:
+    Veto

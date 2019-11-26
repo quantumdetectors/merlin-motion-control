@@ -170,34 +170,54 @@ EN
 WT10
 JS#SETOP
 
-IF ((@IN[1]=1)&(@IN[2]=1))
-	trigger=0
+IF ((@IN[2]=0)&(@IN[1]=0))
+	trigger=3
 ELSE
-	trigger=1
+	IF ((@IN[2]=1)&(@IN[1]=0))
+		trigger=1
+	ELSE
+		IF ((@IN[2]=0)&(@IN[1]=1))
+			trigger=2
+		ELSE
+			IF ((@IN[2]=1)&(@IN[1]=1))
+				trigger=0
+			ENDIF
+		ENDIF
+	ENDIF
 ENDIF
 ZS
-II1,2,,trigger
 IF ((merin=0)&(merstat=2))
 	JS#HOME
 	lmerin=0
 	JS#SETOP
 ENDIF
+II1,2,,trigger
 JP#LOOP
 EN
 RI0
 
 #PNEU
 JS#SETOP
-IF ((@IN[1]=1)&(@IN[2]=1))
-	trigger=0
+IF ((@IN[2]=0)&(@IN[1]=0))
+	trigger=3
 ELSE
-	trigger=1
+	IF ((@IN[2]=1)&(@IN[1]=0))
+		trigger=1
+	ELSE
+		IF ((@IN[2]=0)&(@IN[1]=1))
+			trigger=2
+		ELSE
+			IF ((@IN[2]=1)&(@IN[1]=1))
+				trigger=0
+			ENDIF
+		ENDIF
+	ENDIF
 ENDIF
 II1,2,,trigger
 EN
 
 #SETOP
-IF (((@IN[1]=0)|(@IN[2]=0))&(_RPA>10))
+IF (((@IN[1]=0)&(_RPA>10))|((@IN[2]=0) & (_RPA>10)))
 	OB1, unsafe
 	IF (merin=1)
 		STX
@@ -217,7 +237,7 @@ IF (((@IN[1]=0)|(@IN[2]=0))&(_RPA>10))
 		ENDIF
 	ENDIF
 ELSE
-	IF ((merin=0)&(merstat=2))
+	IF (merin=0) & (merstat=2)
 		WT2000
 	ENDIF
 	OB1, safe
