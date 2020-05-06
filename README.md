@@ -8,7 +8,6 @@ The Merlin Motion Control app is used in conjunction with Quantum Detector's ret
 
 ## Requirements
 
-* Anaconda 3
 * Kivy 1.11.1
 * Gclib for Python 3
 
