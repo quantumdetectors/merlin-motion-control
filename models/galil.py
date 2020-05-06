@@ -53,8 +53,7 @@ class MotionLink():
                 return '0'
             finally:
                 self.g.GClose()
-        else:
-            # Move in
+        else: # Simulation of response for debug=True in views/screens/main/mainscreen.py
             if command == 'merin=1':
                 self.state = 1
             elif command == 'merin=2':
