@@ -106,22 +106,22 @@ On MacOS retina displays the GUI, as of now scales differently to that on Window
 ## Design
 
 ### Modules
-* Merlin_Motion_Control.py - Run the application.
-* .env - Contain the minimal environment settings to run the application. if settings.json is missing it is recreated from the environment.
-* settings.json - Configs the user can change
-* views/__init__.py - Load .env into environment
-* views/interface.py - Load views and build GUI upon running application.
-* views/modals - Contains directories for each modal window in the app (Info, Settings and Test).
-* views/modals/info/infowindow.py - Define the logic for the .kv view. Values declared with self in the class can be accessed on the object created in .kv using root. E.g. self.software_title in .py is accessed with root.software_title in .kv.
-* views/modals/info/infowindow.kv - Define the view of the info modal.
-* views/screens - Contains directories for each screen (currently only main) used in the GUI.
-* views/screens/main/mainscreen.py - Define the logic for the main screen. The main screen only interacts with other views and models/rw_galil. 
-* views/screens/main/mainscreen.kv - Define the view of the mainscreen.
-* views/screens/main/statusfields.py - Define class for status fields on the main screen as a gridlayout.
-* views/screens/main/actionbuttons.py - Define class for buttons on the main screen as a gridlayout.
-* views/static/styles.kv - Define static reusable components that are loaded by interface.py and can be used in other .kv files. 
-* models/rw_galil.py - Update the model for the view layer to read off. Interact with the dmc through models/galil.py for keeping model in sync.
-* models/galil.py - Update the model for the dmc. The model propagates as dmc->galil.py->rw_galil.py->mainscreen.py.
+* **Merlin_Motion_Control.py** - Run the application.
+* **.env** - Contain the minimal environment settings to run the application. if settings.json is missing it is recreated from the environment.
+* **settings.json** - Configs the user can change
+* **views/__init__.py** - Load .env into environment
+* **views/interface.py** - Load views and build GUI upon running application.
+* **views/modals** - Contains directories for each modal window in the app (Info, Settings and Test).
+* **views/modals/info/infowindow.py** - Define the logic for the .kv view. Values declared with self in the class can be accessed on the object created in .kv using root. E.g. self.software_title in .py is accessed with root.software_title in .kv.
+* **views/modals/info/infowindow.kv** - Define the view of the info modal.
+* **views/screens** - Contains directories for each screen (currently only main) used in the GUI.
+* **views/screens/main/mainscreen.py** - Define the logic for the main screen. The main screen only interacts with other views and models/rw_galil. 
+* **views/screens/main/mainscreen.kv** - Define the view of the mainscreen.
+* **views/screens/main/statusfields.py** - Define class for status fields on the main screen as a gridlayout.
+* **views/screens/main/actionbuttons.py** - Define class for buttons on the main screen as a gridlayout.
+* **views/static/styles.kv** - Define static reusable components that are loaded by interface.py and can be used in other .kv files. 
+* **models/rw_galil.py** - Update the model for the view layer to read off. Interact with the dmc through models/galil.py for keeping model in sync.
+* **models/galil.py** - Update the model for the dmc. The model propagates as dmc->galil.py->rw_galil.py->mainscreen.py.
 
 ## Contributing
 
