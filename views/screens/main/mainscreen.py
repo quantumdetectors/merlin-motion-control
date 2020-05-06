@@ -17,6 +17,8 @@ from models.rw_galil import MotionLinkInterface
 import threading
 import time
 import os
+
+# Define the frequency with which the view layer will read from the model layer
 CLOCK_SPEED = 0.000001
 
 

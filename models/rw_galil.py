@@ -5,6 +5,7 @@ from functools import partial
 import threading
 import time
 
+# Define the frequency with which the model layer will ping the dmc for updates.
 CLOCK_SPEED = 0.00001
 
 
