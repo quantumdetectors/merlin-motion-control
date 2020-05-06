@@ -11,14 +11,8 @@ import config
 # Separate kv files
 from kivy.lang import Builder
 from views.modals.settings import settingswindow
-#from views.modals.settings.settingswindow import SettingsWindow
 from views.modals.info import infowindow
 from views.modals.test import testwindow
-#from views.modals.info.infowindow import InfoWindow
-#from views.screens.main.mainscreen import MainScreen
-#from views.screens.main.actionbuttons import ActionButtons
-#from views.screens.main.labels import Labels
-#from views.screens.main.statusfields import StatusFields
 from views.screens.main import mainscreen
 from views.static import styles
 
@@ -35,6 +29,8 @@ class MerlinMotionControlApp(App):
         super method. The super method must not be changed since that is likely to
         impact the functionality of the Kivy framework.
         """
+
+        # Load kivy files based on name of python module
         super(MerlinMotionControlApp, self).__init__(**kwargs)
         Builder.load_file(styles.__file__.split('.py')[0]+'.kv')
         Builder.load_file(settingswindow.__file__.split('.py')[0]+'.kv')

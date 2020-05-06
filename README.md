@@ -101,7 +101,18 @@ At this stage you can start the application by running
 python Merlin_Motion_Control.py
 ```
 
-On MacOS retina displays the GUI, as of now scales differently to that on Windows or an external monitor. The GUI is drawn on startup, so if it starts up on a non-retina monitor it will scale as it does on Windows.
+On MacOS retina displays the GUI, as of now scales differently to that on Windows or an external monitor. The GUI is drawn on startup, so if it starts up on a non-retina monitor it will scale as it does on Windows. 
+
+## Design
+
+### Modules
+Merlin_Motion_Control.py - Run the application.
+.env - Contain the minimal environment settings to run the application. if settings.json is missing it is recreated from the environment.
+settings.json - Configs the user can change
+views/__init__.py - Load .env into environment
+views/interface.py - Load views and build GUI upon running application.
+views/modals - Directory containing subdirectories for each modal window in the app (Info, Settings and Test).
+
 
 ## Contributing
 
