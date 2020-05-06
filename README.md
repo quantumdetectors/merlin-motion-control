@@ -68,6 +68,41 @@ The test window can be closed and reopened while the test is running.
 * Requested Position: 3200 units equals 1 mm. This is the distance to which you want to insert the Merlin relative its retracted position. The default requested position can be set in the settings.json file. There is a hard limit to the maximum value you can set. If you try and assign a higher value than that of the maximum value the program will automatically override your input.
 * Position: The current position relative the retracted position. 3200 units equals 1 mm.
 
+## Installation
+Create a virtual environment (for compatibility reasons, if on MacOS install python3 using Homebrew, do not use  `/usr/bin/python3`).
+
+```zsh
+python3 -m venv venv
+```
+
+Source the venv
+
+```zsh
+source venv/bin/activate
+```
+
+If on Windows, depending on the shell, the sourcing is done using either `.\venv\Scripts\activate.bat` or `./venv/Scripts/Activate.ps1`.
+
+Install [gclib](http://www.galil.com/sw/pub/all/doc/gclib/html/installation.html) and follow Python setupß instructions under [Language Support > Python](http://www.galil.com/sw/pub/all/doc/gclib/html/python.html). Note you will have to carry out the setup instructions while in the virtual environment of merlin-motion-control. For example
+
+![Setting up gclib for use as a python package](assets/python_linking_gclib.png)
+
+Also note, that on MacOS, creating the environment variable `DYLIB_LIBRARY_PATH` is not optional for this usage. See Galil's instructions on creating it.
+
+With gclib set up for use as a package in Python, navigate to your `merlin-motion-control` directory and install the last of the requirements (still in your virtual environment)
+
+```zsh
+pip install -r requirements.txt
+```
+
+At this stage you can start the application by running
+
+```zsh
+python Merlin_Motion_Control.py
+```
+
+On MacOS retina displays the GUI, as of now scales differently to that on Windows or an external monitor. The GUI is drawn on startup, so if it starts up on a non-retina monitor it will scale as it does on Windows.
+
 ## Contributing
 
 Please refer to each project's style and contribution guidelines for submitting patches and additions. In general, we follow the ["fork-and-pull" Git workflow](https://gist.github.com/Chaser324/ce0505fbed06b947d962).
