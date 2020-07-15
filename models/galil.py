@@ -23,7 +23,7 @@ class MotionLink():
 
     def connect(self):
         try:
-            self.g.GOpen('{} --direct -s ALL'.format(self.mer_ip_address))
+            self.g.GOpen('{} -s ALL'.format(self.mer_ip_address))
             self.g.timeout = 1000
             self.connected = True
         except gclib.GclibError as e:
@@ -37,7 +37,7 @@ class MotionLink():
     def _execute(self,command):
         if not self.debug:
             try:
-                self.g.GOpen('{} --direct -s ALL'.format(self.mer_ip_address))
+                self.g.GOpen('{} -s ALL'.format(self.mer_ip_address))
                 self.g.timeout = 5000
                 val = self.g.GCommand(command)
                 self.g.timeout = 5000
