@@ -6,6 +6,19 @@ Interlock and controller for MerlinEM DMC.
 
 The Merlin Motion Control app is used in conjunction with Quantum Detector's retractable Merlin detectors and the MotionPod interlock unit from MotionLink.
 
+##Implements
+
+CetaON | CetaIn | CetaVeto | Merlin Status
+------- -------- --------- |
+  No   |   No   |   Yes      Can not be inserted
+------ -------- ---------- |
+  Yes  |   No   |    No      Can be inserted
+------- -------- --------- |
+   No  |   Yes  |    Yes     Can not be inserted
+------- -------- --------- |
+   Yes |   Yes  |    Yes     Can not be inserted
+------- -------- --------- |
+
 ## Requirements
 
 * Anaconda 3
