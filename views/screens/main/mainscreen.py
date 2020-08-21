@@ -19,9 +19,10 @@ import time
 import os
 
 # Define the frequency with which the view layer will read from the model layer
-CLOCK_SPEED = 0.000001
-
-
+CLOCK_SPEED = 0.000000001
+count = 0
+bounce = 0
+#button_move_in_disabled = False
 class MainScreen(FloatLayout):
     """Add layout and functionality to the main app window."""
 
@@ -31,6 +32,8 @@ class MainScreen(FloatLayout):
     standby_position = StringProperty('0')
     current_state = StringProperty('Default')
     requested_state = StringProperty('Default')
+    trigger = StringProperty('Default')
+    trig = BooleanProperty('False')
     gatan_in = StringProperty('Default')
     gatan_veto = StringProperty('Default')
     gatan_in_msg = StringProperty('Default')
@@ -41,27 +44,63 @@ class MainScreen(FloatLayout):
     interlocked = 0
     inserted = 0
     debug = False
+    disable = False
     ml_interface = MotionLinkInterface()
 
     def disable_window(self):
         return True if self.connection_status == 'Disconnected' else False
+
     def disable_standby(self):
+        global count
         state = int(float(self.ml_interface.current_state))
-        return True if state == 4 and self.requested_state != 'Default' else False
+        count = count + 1
+        if self.trigger == 'Pressed':
+            self.trigger = 'Done'
+            self.disable = True
+
+        if state != 2 and count > 10:
+            self.disable = False
+        return self.disable
+
     def disable_move_in(self):
+        global count
         state = int(float(self.ml_interface.current_state))
-        return  True if state == 1 and self.requested_state != 'Default' else False
+        count = count + 1
+        if self.trigger == 'Pressed':
+            self.trigger = 'Done'
+            self.disable = True
+
+        if state != 2 and count > 10:
+            self.disable = False
+        return self.disable
+
+
     def disable_move_out(self):
+        global count
         state = int(float(self.ml_interface.current_state))
-        return True if state == 0 else False
+        count = count + 1
+        if self.trigger == 'Pressed':
+            self.trigger = 'Done'
+            self.disable = True
+
+        if state != 2 and count > 10:
+            self.disable = False
+        return self.disable
+
     def disable_stop(self):
-        state = int(float(self.ml_interface.current_state))
-        return False if state == 2 else True
+        if self.requested_state == 'Stopped' or self.requested_state == 'Standby':
+            return True
+        else:
+            return False
+
+    def disable_now(self):
+        return True
+
 
     window_disabled = AliasProperty(disable_window, bind=['connection_status'])
-    button_standby_disabled = AliasProperty(disable_standby, bind=['current_state'])
-    button_move_in_disabled = AliasProperty(disable_move_in, bind=['current_state'])
-    button_move_out_disabled = AliasProperty(disable_move_out, bind=['current_state'])
+    button_standby_disabled = AliasProperty(disable_standby, bind=['current_state', 'trig'])
+    button_move_in_disabled = AliasProperty(disable_move_in, bind=['current_state', 'trig'])
+    button_move_out_disabled = AliasProperty(disable_move_out, bind=['current_state', 'trig'])
     button_stop_disabled = AliasProperty(disable_stop, bind=['current_state'])
 
     def __init__(self, settings, **kwargs):
@@ -74,7 +113,7 @@ class MainScreen(FloatLayout):
         impact the functionality of the Kivy framework.
         """
         super(MainScreen, self).__init__(**kwargs)
-        Clock.schedule_interval(self.update_status_fields, 100*CLOCK_SPEED)
+        Clock.schedule_interval(self.update_status_fields, 1*CLOCK_SPEED)
         self.settings = settings
         self.ml_interface.debug = self.debug
         self.ml_interface.mer_ip_address = self.settings["ip_address"]
@@ -105,20 +144,29 @@ class MainScreen(FloatLayout):
 
     @mainthread
     def standby(self):
+        global count
         """Call move to standby."""
         self.ml_interface.standby()
         self.requested_state = 'Standby'
+        self.trigger = 'Pressed'
+        count = 0
 
     @mainthread
     def move_in(self):
+        global count
+        count = 0
         """Call move in function on the MotionLink object."""
         self.requested_state = 'Inserted'
+        self.trigger = 'Pressed'
         self.ml_interface.move(1)
 
     @mainthread
     def move_out(self):
+        global count
         """Call move in function on the MotionLink object."""
         self.requested_state = 'Retracted'
+        self.trigger = 'Pressed'
+        count = 0
         self.ml_interface.move(0)
 
     @mainthread
@@ -206,6 +254,8 @@ class MainScreen(FloatLayout):
         if int(self.rp) >= int(self.requested_position) and self.inserted == 0:
             self.inserted = 1
 
+        if(self.trigger == 'Pressed'):
+            self.trig = not self.trig
         state = int(float(self.ml_interface.current_state))
         self.current_state = 'Standby' if state == 4 else ('Stopped'if state == 3 else ('Moving' if state == 2 else ('Inserted' if state == 1 else 'Retracted')))
         self.gatan_in_msg = 'Yes' if self.ml_interface.gatan_in else 'No'
