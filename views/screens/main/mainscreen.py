@@ -43,7 +43,7 @@ class MainScreen(FloatLayout):
     state = NumericProperty(0)
     interlocked = 0
     inserted = 0
-    debug = True
+    debug = False
     disable = False               
     ml_interface = MotionLinkInterface()
 
