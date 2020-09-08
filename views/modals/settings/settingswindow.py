@@ -37,6 +37,8 @@ class SettingsWindow(ModalView):
         self.requested_position = str(ml_object.requested_position)
         self.ml = ml_object
         self.main = main_screen
+        
+        self.set_values()
 
     def set_values(self):
         """Update values of MotionLink object when called.
@@ -45,9 +47,27 @@ class SettingsWindow(ModalView):
           the current ones of the MotionLink object.
         """
 
+        # Hard coded value for maximum/minimum speed for insertion/retraction
+        self.max_speed = 20000
+        self.min_speed = 40000
+        
+        
         self.ml.mer_ip_address = self.ip_address
-        self.ml.speed = self.speed
-        self.ml.speed_out = self.speed_out
+
+        # Now if you try to set speed over a maximum through the settings window
+        # it will setting back to the hard codded value (CETA collision prevention)
+        if int(self.speed) > self.max_speed:
+            self.ml.speed = str(self.max_speed)
+        else :
+            self.ml.speed = self.speed
+            
+        # Now if you try to set speed under a minimum through the settings window
+        # it will set it back to the hard codded value  (CETA collision prevention)
+        if int(self.speed_out) < self.min_speed:
+            self.ml.speed_out = str(self.min_speed)
+        else :
+            self.ml.speed_out = self.speed_out
+
         self.ml.standby_position = self.standby_position
         self.ml.requested_position = self.requested_position
         self.ml.update_ml()
