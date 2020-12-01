@@ -54,15 +54,15 @@ class SettingsWindow(ModalView):
         
         self.ml.mer_ip_address = self.ip_address
 
-        # Now if you try to set speed over a maximum through the settings window
-        # it will setting back to the hard codded value (CETA collision prevention)
+        # Now if you try to set insertion speed over a maximum through the settings window
+        # it will setting back to the hard coded value (CETA collision prevention)
         if int(self.speed) > self.max_speed:
             self.ml.speed = str(self.max_speed)
         else :
             self.ml.speed = self.speed
             
-        # Now if you try to set speed under a minimum through the settings window
-        # it will set it back to the hard codded value  (CETA collision prevention)
+        # Now if you try to set retraction speed under a minimum through the settings window
+        # it will set it back to the hard coded value  (CETA collision prevention)
         if int(self.speed_out) < self.min_speed:
             self.ml.speed_out = str(self.min_speed)
         else :
