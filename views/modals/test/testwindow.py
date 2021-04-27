@@ -17,7 +17,7 @@ class TestWindow(ModalView):
     cycles = StringProperty('200')
     cycle = StringProperty('Default')
     delay = StringProperty('10.0')
-    speed = StringProperty('20000')
+    speed = StringProperty('7500')
     speed_out = StringProperty('20000')
     requested_position = StringProperty('180000')
     total_test_time_label = StringProperty('Default')
