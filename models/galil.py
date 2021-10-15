@@ -204,13 +204,6 @@ class MotionLink():
         else:
             CameraVeto = 1
 
-        one = self._execute("MG @IN[1]")
-        four = self._execute("MG @IN[4]")
-        zero = self._execute("MG @OUT[0]")
-
-        
-        print(zero, one)
-
         return CameraVeto
 
 
