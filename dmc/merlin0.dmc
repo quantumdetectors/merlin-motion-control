@@ -1,0 +1,160 @@
+#AUTO
+
+safe=0
+unsafe=1
+
+
+
+AG0
+YA 16
+SH
+WT50
+
+merspeed=7500
+merspeec=20000
+merin=0
+lmerin=0
+merstat=0
+meroff=0
+decel=2000000
+req_pos=0
+stdbypos=0
+
+IF (_LRX=0)
+	MG "Moving off limit"
+	JS#HOME2
+ENDIF
+
+JS#HOME
+'JS#PNEU
+
+AC1000000
+DC=decel
+
+JP#LOOP
+
+#LOOP
+'MG "Loop"
+IF (merin <> lmerin)
+	lmerin=merin
+	'MG "Mer changed"
+	'MG merin
+	IF (merin=1)
+		
+			JS #MOIN
+		
+	ELSE
+		IF (merin=2)
+				JS #STP
+		ELSE
+			IF (merin=3)
+				JS #STDBY
+			ELSE
+				JS #HOME
+			ENDIF
+		ENDIF
+	ENDIF
+	'JS#SETOP
+ENDIF
+WT1000
+
+ENDIF                                         
+JP#LOOP
+EN
+
+
+#STP
+'MG "Stop"
+#Q
+IF (merin <> 2)
+    JS #LOOP
+ENDIF
+JP#Q, _LRX = 0, _LFX = 0
+MO
+merstat=3
+'MG "Stopped"
+EN
+
+#HOME
+'MG "move out"
+
+merstat=2
+SH
+DCX=decel
+JGX=-1*merspeec
+BGX
+#L
+IF (merin <> 0)
+	STX
+	AMX
+	JS #LOOP
+ENDIF
+JP#L, _LRX = 1
+STX
+AMX
+#HOME2
+DCX=67107840
+JGX=500
+BGX
+#M
+IF (merin <> 0)
+	DCX=decel
+	STX
+	AMX
+	JS #LOOP
+ENDIF
+JP#M, _LRX = 0
+STX
+AMX
+DP0
+MO
+merstat=0
+MG "Homed"
+EN
+
+#MOIN
+'MG "move in"
+
+merstat=2
+SH
+DCX=decel
+JGX=merspeed
+PA req_pos
+BGX
+'MF req_pos
+
+#A
+IF (merin <> 1)
+	STX
+	AMX
+	JS #LOOP
+ENDIF
+JP#A, _BGX = 1
+AMX
+merstat=1
+'MG "Moved"
+MO
+
+EN
+
+#STDBY
+'MG "Going to standby"
+merstat=2
+SH
+DCX=decel
+JGX=merspeed
+PA stdbypos
+BGX
+#AA
+IF (merin <> 3)
+	STX
+	AMX
+	JS #LOOP
+ENDIF
+JP#AA, _BGX = 1
+AMX
+merstat=4
+'MG "In Standby"
+MO
+EN
+
