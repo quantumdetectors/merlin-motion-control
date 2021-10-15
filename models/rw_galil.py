@@ -5,14 +5,15 @@ from functools import partial
 import threading
 import time
 
-# Define the frequency with which the model layer will ping the dmc for updates.
 CLOCK_SPEED = 0.00001
 
 
 class MotionLinkInterface():
     rp = '0'
-    gatan_in = 1
-    gatan_veto = 1
+    camera_in = 1
+    camera_on = 1
+    camera_veto = 1
+    i_type_data = ['No Connection',"MG @IN[0]","MG @IN[0]"]
     speed = '0'
     speed_out = '0'
     mer_ip_address = '0.0.0.0'
@@ -55,9 +56,11 @@ class MotionLinkInterface():
     def read(self, *args):
         if self.is_connected or self.debug:
             self.rp = self.ml.read_rp()
-            self.gatan_in = self.ml.get_gatan_in()
-            self.gatan_veto = self.ml.get_gatan_veto()
+            self.camera_in = self.ml.get_camera_in()
+            self.camera_on = self.ml.get_camera_on()
+            self.camera_veto = self.ml.get_camera_veto()
             self.current_state = self.ml.read_merstat()
+            self.i_type_data = self.ml.interlock_type_data()
 
     def update_ml(self):
         self.ml.speed = self.speed

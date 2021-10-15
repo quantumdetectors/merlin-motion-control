@@ -95,7 +95,7 @@
                 on_press: root.parent.parent.stop()
 
 <Labels>:
-    rows: 7
+    rows: 9
     cols: 1
     spacing: 10
     padding: 0
@@ -106,16 +106,20 @@
     CustomLabel:
         text: "Current State"
     CustomLabel:
-        text: "Gatan In"
+        text: "Interlock Type"
     CustomLabel:
-        text: "Gatan Veto"
+        text: "Camera In"
+    CustomLabel:
+        text: "Camera On"
+    CustomLabel:
+        text: "Camera Veto"
     CustomLabel:
         text: "Requested Position"
     CustomLabel:
         text: "Position"
 
 <StatusFields>:
-    rows: 7
+    rows: 9
     cols: 1
     spacing: 10
     padding: 0
@@ -128,9 +132,13 @@
     CustomLabel:
         text: root.parent.parent.current_state
     CustomLabel:
-        text: root.parent.parent.gatan_in_msg
+        text: root.parent.parent.interlock_type_msg
     CustomLabel:
-        text: root.parent.parent.gatan_veto_msg
+        text: root.parent.parent.camera_in_msg
+    CustomLabel:
+        text: root.parent.parent.camera_on_msg
+    CustomLabel:
+        text: root.parent.parent.camera_veto_msg
     CustomLabel:
         text: root.parent.parent.requested_position
     CustomLabel:

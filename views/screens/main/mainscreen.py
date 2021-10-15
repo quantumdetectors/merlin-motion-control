@@ -17,12 +17,10 @@ from models.rw_galil import MotionLinkInterface
 import threading
 import time
 import os
-
-# Define the frequency with which the view layer will read from the model layer
 CLOCK_SPEED = 0.000000001
 count = 0
-bounce = 0
-#button_move_in_disabled = False
+
+
 class MainScreen(FloatLayout):
     """Add layout and functionality to the main app window."""
 
@@ -33,24 +31,27 @@ class MainScreen(FloatLayout):
     current_state = StringProperty('Default')
     requested_state = StringProperty('Default')
     trigger = StringProperty('Default')
-    trig = BooleanProperty('False')
-    gatan_in = StringProperty('Default')
-    gatan_veto = StringProperty('Default')
-    gatan_in_msg = StringProperty('Default')
-    gatan_veto_msg = StringProperty('Default')
+    trig = BooleanProperty('False')                                                                  
+    camera_in = StringProperty('Default')
+    camera_on = StringProperty('Default')
+    camera_veto = StringProperty('Default')
+    interlock_type = NumericProperty(0)
+    camera_in_msg = StringProperty('Default')
+    camera_on_msg = StringProperty('Default')
+    camera_veto_msg = StringProperty('Default')
+    interlock_type_msg = StringProperty('Default')
     _is_connected = BooleanProperty('False')
     connection_status = StringProperty('Disconnected')
     state = NumericProperty(0)
     interlocked = 0
     inserted = 0
     debug = False
-    disable = False
+    disable = False               
     ml_interface = MotionLinkInterface()
 
     def disable_window(self):
         return True if self.connection_status == 'Disconnected' else False
-
-    def disable_standby(self):
+    def disable_standby(self):        
         global count
         state = int(float(self.ml_interface.current_state))
         count = count + 1
@@ -61,7 +62,6 @@ class MainScreen(FloatLayout):
         if state != 2 and count > 10:
             self.disable = False
         return self.disable
-
     def disable_move_in(self):
         global count
         state = int(float(self.ml_interface.current_state))
@@ -73,8 +73,6 @@ class MainScreen(FloatLayout):
         if state != 2 and count > 10:
             self.disable = False
         return self.disable
-
-
     def disable_move_out(self):
         global count
         state = int(float(self.ml_interface.current_state))
@@ -86,16 +84,11 @@ class MainScreen(FloatLayout):
         if state != 2 and count > 10:
             self.disable = False
         return self.disable
-
     def disable_stop(self):
         if self.requested_state == 'Stopped' or self.requested_state == 'Standby':
             return True
         else:
             return False
-
-    def disable_now(self):
-        return True
-
 
     window_disabled = AliasProperty(disable_window, bind=['connection_status'])
     button_standby_disabled = AliasProperty(disable_standby, bind=['current_state', 'trig'])
@@ -121,6 +114,7 @@ class MainScreen(FloatLayout):
         self.ml_interface.software_title = self.settings["title"]
         self.ml_interface.speed = str(self.settings["speed"])
         self.ml_interface.speed_out = str(self.settings["speed_out"])
+        self.ml_interface.interlock_type = str(self.settings["interlock_type"])
         self.standby_position = str(
             self.settings["standby_position"]
         )
@@ -150,7 +144,6 @@ class MainScreen(FloatLayout):
         self.requested_state = 'Standby'
         self.trigger = 'Pressed'
         count = 0
-
     @mainthread
     def move_in(self):
         global count
@@ -158,8 +151,15 @@ class MainScreen(FloatLayout):
         """Call move in function on the MotionLink object."""
         self.requested_state = 'Inserted'
         self.trigger = 'Pressed'
-        self.ml_interface.move(1)
 
+        if self.ml_interface.camera_veto:
+            self.current_state= 'Blocked'
+            
+        else :
+            self.requested_state = 'Inserted'
+            
+            self.ml_interface.move(1)
+        
     @mainthread
     def move_out(self):
         global count
@@ -215,10 +215,10 @@ class MainScreen(FloatLayout):
         connection_status: 'Connection established' if _is_connected is True.
                            'Disconnected' if _is_conneceted is False.
 
-        gatan_in_msg: 'Yes' if get_gatan_in() on MotionLink object is True.
+        camera_in_msg: 'Yes' if get_camera_in() on MotionLink object is True.
                       'No' if False.
 
-        gatan_veto_msg: 'In' if get_gatan_veto() call to MotionLink
+        camera_veto_msg: 'In' if get_camera_veto() call to MotionLink
                           object is True.
                         'No' if False.
 
@@ -255,17 +255,28 @@ class MainScreen(FloatLayout):
             self.inserted = 1
 
         if(self.trigger == 'Pressed'):
-            self.trig = not self.trig
+            self.trig = not self.trig                     
         state = int(float(self.ml_interface.current_state))
         self.current_state = 'Standby' if state == 4 else ('Stopped'if state == 3 else ('Moving' if state == 2 else ('Inserted' if state == 1 else 'Retracted')))
-        self.gatan_in_msg = 'Yes' if self.ml_interface.gatan_in else 'No'
-        self.gatan_veto_msg = 'Yes' if self.ml_interface.gatan_veto else 'No'
+        self.camera_in_msg = 'Yes' if self.ml_interface.camera_in else 'No'
+        self.camera_on_msg = 'Yes' if self.ml_interface.camera_on else 'No'
+        self.camera_veto_msg = 'Yes' if self.ml_interface.camera_veto else 'No'
+
+        
+        
+        i_type = self.ml_interface.i_type_data
+        self.interlock_type_msg = i_type[0]     #first entry of data returned from function contains type of interlock
+
 
         if int(self.settingsWindow.requested_position) > self.settings["max_position"]:
             self.settingsWindow.requested_position = str(self.settings["max_position"])
 
         if int(self.settingsWindow.standby_position) > self.settings["max_position"]:
             self.settingsWindow.standby_position = str(self.settings["max_position"])
+
+        if self.ml_interface.camera_veto and state != 0:        #If the veto reads Yes and the state is anything but retracted then the stage is retracted
+            self.ml_interface.move(0)
+                
 
         # Called last
         self._rp = self.rp

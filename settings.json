@@ -1,6 +1,7 @@
 {
   "ip_address": "192.168.0.157",
   "default_requested_position": 180000,
-  "speed": 20000,
-  "speed_out": 20000
+  "speed": 75000,
+  "speed_out": 20000,
+  "interlock_type": 1
 }
