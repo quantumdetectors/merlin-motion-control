@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from models.verify_ip import is_valid_ipv4_address
+import json
 import gclib
 import random
 
@@ -10,7 +11,7 @@ class MotionLink():
     mer_ip_address = ''
     speed = ''
     speed_out = ''
-    merspeed = '20000'
+    merspeed = '7500'
     merspeec = '20000'
     requested_position = ''
     standby_position = ''
@@ -20,14 +21,24 @@ class MotionLink():
     state = 0
     connected = False
     g = gclib.py()
+    disconnect = 0
+    
+    with open('settings.json') as settings:
+        data = json.load(settings)
+        i_type = data['interlock_type']
+    
 
     def connect(self):
         try:
             self.g.GOpen('{} -s ALL'.format(self.mer_ip_address))
             self.g.timeout = 1000
+            self.g.disconnect = 0
             self.connected = True
         except gclib.GclibError as e:
             print('Could not establish a connection:', e)
+            #self.g.disconnect += 1
+            #if self.g.disconnect > 30: os.system("shutdown /r /t 30")
+            #print(self.g.disconnect)
             self.connected = False
         except Exception:
             self.connected = False
@@ -45,6 +56,7 @@ class MotionLink():
                 return val
             except gclib.GclibError as e:
                 print('Disconnecting device due to unexpected GclibError:', e)
+
                 self.connected = False
                 return '0'
             except Exception:
@@ -53,7 +65,8 @@ class MotionLink():
                 return '0'
             finally:
                 self.g.GClose()
-        else: # Simulation of response for debug=True in views/screens/main/mainscreen.py
+        else:
+            # Move in
             if command == 'merin=1':
                 self.state = 1
             elif command == 'merin=2':
@@ -93,10 +106,7 @@ class MotionLink():
                         self.current_state = 4
                         debug_pos = self.last_debug_pos
                     return str(debug_pos)
-            elif command == 'MG @IN[1]':
-                return random.randint(0,1)
-            elif command == 'MG @OUT[1]':
-                return random.randint(0,1)
+            
             elif command.split('=')[0] == 'merspeed':
                 cmd = command.split('=')
                 if cmd[1] == '?':
@@ -151,20 +161,58 @@ class MotionLink():
         val = self._execute('stdbypos={}'.format(cmd))
         return val
 
-    def get_gatan_in(self):
-        if self.debug:
-            return 0
-            #if self._execute('MG @IN[1]') == 1:
-            #    return 0
-            #else:
-            #    return 1
-        return 0 if float(self._execute('MG @IN[1]')) else 1
+    def interlock_type_data(self):                            #creation of dictionary for interlock types
+        inter=self.i_type
+        interlock = {
+            0: ['Override',"MG @OUT[0]","MG @OUT[0]"],
+            1: ['Pneumatic',"MG @IN[1]","MG @IN[2]"],      #format is [name, cameraIn logic, CameraOn logic]      
+            2: ['RJ45',"MG @IN[3]","MG @IN[4]" ]         
+            
+        }   
+         
+        return interlock.get(inter, "Invalid selection")       #invalid selection would be printed if not selected correctly
 
-    def get_gatan_veto(self):
+    def get_camera_in(self):
         if self.debug:
             return 0
-            #return self._execute('MG @OUT[1]')
-        return int(float(self._execute('MG @OUT[1]')))
+        
+        inter=(self.interlock_type_data())           #getting interlock data from the selected i_type
+        cmd=inter[1]                                #verbose; selecting correct interlock data, camera in             
+        in_state = int(float(self._execute(cmd)))   #int float required to sanitise the format
+        
+        return 0 if in_state else 1                      #In state determined by signal attributed to camera in being high this would be better reflected as camera retracted, this is therefore inverted 
+
+
+    def get_camera_on(self):
+        if self.debug:
+            return 0
+        
+        inter=(self.interlock_type_data())           #getting interlock data from the selected i_type
+        cmd=inter[2]                                #verbose; selecting correct interlock data, camera on
+        on_state = int(float(self._execute(cmd)))
+
+        return 1 if on_state else 0              #if the on_state is high then return that the camera is on
+
+    def get_camera_veto(self):
+        if self.debug:
+            return 0
+        CameraOn = self.get_camera_on()
+        CameraIn = self.get_camera_in()
+        
+        if CameraOn == 1 and CameraIn == 0:
+           CameraVeto = 0
+        else:
+            CameraVeto = 1
+
+        one = self._execute("MG @IN[1]")
+        four = self._execute("MG @IN[4]")
+        zero = self._execute("MG @OUT[0]")
+
+        
+        print(zero, one)
+
+        return CameraVeto
+
 
     def set_speed(self, speed):
         self._execute('merspeed={speed}'.format(speed=speed))
