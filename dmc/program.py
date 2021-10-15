@@ -2,6 +2,7 @@ import sys
 import string
 import gclib
 import time
+import json
 
 
 def main():
@@ -13,8 +14,13 @@ def main():
     g.GOpen('192.168.0.157 --direct -s ALL')
     print(g.GInfo())
     g.timeout = 300000
+    with open('settings.json') as settings:
+      data = json.load(settings)
+      i_type = data['interlock_type']
+      
+    dmc=str('dmc/merlin%s.dmc'% i_type)
 
-    with open('dmc/merlin.dmc') as prog:
+    with open(dmc) as prog:
         lines = prog.read()
         out = []
         for l in lines.split('\n'):
